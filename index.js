@@ -20,6 +20,8 @@ app.use(
     credentials: true, // if you use cookies or auth headers
   })
 );
+app.use(cors(corsOptions));
+
 app.use(express.json());
 
 // Start matchmaking interval
