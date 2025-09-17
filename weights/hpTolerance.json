@@ -1,0 +1,9 @@
+{
+  "hpTolerance": [
+    { "range": [0, 10], "diffPercent": 0.10 },
+    { "range": [11, 20], "diffPercent": 0.20 },
+    { "range": [21, 30], "diffPercent": 0.30 },
+    { "range": [31, 40], "diffPercent": 0.40 },
+    { "range": [41, 50], "diffPercent": 0.50 }
+  ]
+}
