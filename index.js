@@ -11,7 +11,15 @@ const { endRound } = require("./phaseController");
 
 const app = express();
 
-app.use(cors());
+// ✅ Configure CORS properly
+app.use(
+  cors({
+    origin: "http://localhost:5173", // frontend URL
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // if you use cookies or auth headers
+  })
+);
 app.use(express.json());
 
 // Start matchmaking interval
