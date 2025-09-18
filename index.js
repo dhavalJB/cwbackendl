@@ -9,6 +9,7 @@ const {
 } = require("./controllers/battleController");
 const { endRound } = require("./phaseController");
 const axios = require("axios");
+const { telegramWebhookHandler } = require("./botStart");
 
 const app = express();
 
@@ -80,6 +81,9 @@ app.post("/api/battle/:matchId/cancelMatch", async (req, res) => {
     return res.status(500).json({ error: "Failed to cancel match" });
   }
 });
+
+app.post("/telegram-bot", telegramWebhookHandler);
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
