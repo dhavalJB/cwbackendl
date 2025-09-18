@@ -82,20 +82,28 @@ const selectAbility = async (req, res) => {
       return res.status(400).json({ error: "Invalid player" });
     }
 
-    await update(ref(db, `ongoingBattles/${matchId}/${dbKey}/currentRound`), {
-      abilitySelected: abilityKey,
-    });
+    const currentRoundRef = ref(db, `ongoingBattles/${matchId}/${dbKey}/currentRound`);
+    const roundSnap = await get(currentRoundRef);
+
+    // Ensure currentRound exists
+    if (!roundSnap.exists()) {
+      await set(currentRoundRef, {});
+    }
+
+    // Update ability selection
+    await update(currentRoundRef, { abilitySelected: abilityKey });
 
     res.json({
       success: true,
       message: `Ability ${abilityKey} selected`,
-      dbKey, // 👈 return which slot was updated
+      dbKey,
     });
   } catch (err) {
     console.error("Error selecting ability:", err);
     res.status(500).json({ error: "Server error" });
   }
 };
+
 
 /**
  * Saves current round data into previousRounds and clears currentRound
