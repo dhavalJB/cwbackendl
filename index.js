@@ -8,12 +8,17 @@ const {
   endBattle,
 } = require("./controllers/battleController");
 const { endRound } = require("./phaseController");
+const axios = require("axios");
 
 const app = express();
 
 // ✅ Allow all origins
 app.use(cors());
 app.use(express.json());
+
+app.get("/", (req, res) => {
+  res.send("⚔️ Clash Warriors backend is alive 🚀");
+});
 
 // Start matchmaking interval
 startMatchmaking(db, 500); // check every 500ms
@@ -78,3 +83,16 @@ app.post("/api/battle/:matchId/cancelMatch", async (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+if (process.env.RENDER_EXTERNAL_URL) {
+  const SELF_URL = process.env.RENDER_EXTERNAL_URL;
+
+  setInterval(async () => {
+    try {
+      await axios.get(SELF_URL);
+      console.log("🔄 Keep-alive ping sent");
+    } catch (err) {
+      console.error("❌ Keep-alive ping failed:", err.message);
+    }
+  }, 40 * 1000); // ping every 40s
+}
