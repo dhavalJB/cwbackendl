@@ -12,7 +12,6 @@ const { endRound } = require("./phaseController");
 const app = express();
 
 // ✅ Allow all origins
-app.use(cors()); // this allows any origin, any method, any headers
 app.use(cors());
 app.use(express.json());
 
