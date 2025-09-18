@@ -44,7 +44,7 @@ const selectCard = async (req, res) => {
     });
 
     res.json({
-      success: true,
+      success: true, 
       message: "Card selected",
       dbKey, // 👈 tell frontend which DB slot was updated
     });
