@@ -23,9 +23,9 @@ const selectCard = async (req, res) => {
 
     let dbKey = null;
 
-    if (match.player1?.playerId === playerId) {
+    if (match.player1?.userId === playerId) {
       dbKey = "player1";
-    } else if (match.player2?.playerId === playerId) {
+    } else if (match.player2?.userId === playerId) {
       dbKey = "player2";
     } else {
       return res.status(400).json({ error: "Invalid player" });
@@ -44,7 +44,7 @@ const selectCard = async (req, res) => {
     });
 
     res.json({
-      success: true, 
+      success: true,
       message: "Card selected",
       dbKey, // 👈 tell frontend which DB slot was updated
     });
