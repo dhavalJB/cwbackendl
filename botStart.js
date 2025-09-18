@@ -13,7 +13,8 @@ if (!TELEGRAM_BOT_TOKEN) {
 const bot = new TelegramBot(TELEGRAM_BOT_TOKEN, { polling: false });
 
 const miniAppUrl = "https://www.clashwarriors.tech/";
-const imageUrl = "https://www.clashwarriors.tech/assets/social/test.png";
+const imageUrl =
+  "https://adorable-fudge-c73118.netlify.app/assets/social/test.png";
 const description = `
 🎮 *Welcome to Clash Warriors!*
 
@@ -89,6 +90,7 @@ async function handleStartCommand(msg, match) {
 
     const opts = {
       parse_mode: "Markdown",
+      caption: description.slice(0, 1024), // ensure max 1024 chars
       reply_markup: {
         inline_keyboard: [
           [{ text: "🎮 Start Game", web_app: { url: miniAppUrl } }],
@@ -102,7 +104,7 @@ async function handleStartCommand(msg, match) {
       },
     };
 
-    await bot.sendPhoto(chatId, imageUrl, { caption: description, ...opts });
+    await bot.sendPhoto(chatId, imageUrl, opts);
   } catch (err) {
     console.error("❌ Telegram /start error:", err);
     bot.sendMessage(chatId, description, { parse_mode: "Markdown" });
