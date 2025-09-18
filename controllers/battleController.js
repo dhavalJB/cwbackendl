@@ -21,33 +21,33 @@ const selectCard = async (req, res) => {
       return res.status(400).json({ error: "Not in selection phase" });
     }
 
-    const playerKey =
-      match.player1?.playerId === playerId
-        ? "player1"
-        : match.player2?.playerId === playerId
-        ? "player2"
-        : null;
+    let dbKey = null;
 
-    if (!playerKey) {
+    if (match.player1?.playerId === playerId) {
+      dbKey = "player1";
+    } else if (match.player2?.playerId === playerId) {
+      dbKey = "player2";
+    } else {
       return res.status(400).json({ error: "Invalid player" });
     }
 
-    if (match[playerKey]?.currentRound?.cardId) {
+    if (match[dbKey]?.currentRound?.cardId) {
       return res
         .status(400)
         .json({ error: "Card already selected this round" });
     }
 
-    await update(
-      ref(db, `ongoingBattles/${matchId}/${playerKey}/currentRound`),
-      {
-        cardId,
-        cardPhotoSrc: photo,
-        stats,
-      }
-    );
+    await update(ref(db, `ongoingBattles/${matchId}/${dbKey}/currentRound`), {
+      cardId,
+      cardPhotoSrc: photo,
+      stats,
+    });
 
-    res.json({ success: true, message: "Card selected" });
+    res.json({
+      success: true,
+      message: "Card selected",
+      dbKey, // 👈 tell frontend which DB slot was updated
+    });
   } catch (err) {
     console.error("Error selecting card:", err);
     res.status(500).json({ error: "Server error" });
@@ -72,25 +72,25 @@ const selectAbility = async (req, res) => {
       return res.status(400).json({ error: "Not in selection phase" });
     }
 
-    const playerKey =
-      match.player1?.playerId === playerId
-        ? "player1"
-        : match.player2?.playerId === playerId
-        ? "player2"
-        : null;
+    let dbKey = null;
 
-    if (!playerKey) {
+    if (match.player1?.playerId === playerId) {
+      dbKey = "player1";
+    } else if (match.player2?.playerId === playerId) {
+      dbKey = "player2";
+    } else {
       return res.status(400).json({ error: "Invalid player" });
     }
 
-    await update(
-      ref(db, `ongoingBattles/${matchId}/${playerKey}/currentRound`),
-      {
-        abilitySelected: abilityKey,
-      }
-    );
+    await update(ref(db, `ongoingBattles/${matchId}/${dbKey}/currentRound`), {
+      abilitySelected: abilityKey,
+    });
 
-    res.json({ success: true, message: `Ability ${abilityKey} selected` });
+    res.json({
+      success: true,
+      message: `Ability ${abilityKey} selected`,
+      dbKey, // 👈 return which slot was updated
+    });
   } catch (err) {
     console.error("Error selecting ability:", err);
     res.status(500).json({ error: "Server error" });
@@ -160,7 +160,6 @@ async function saveRoundData(matchId, round) {
 async function endBattle(matchId, loserId) {
   const matchRef = db.ref(`ongoingBattles/${matchId}`);
   try {
-
     const snap = await matchRef.once("value");
     const matchData = snap.val();
     if (!matchData?.player1 || !matchData?.player2) return;

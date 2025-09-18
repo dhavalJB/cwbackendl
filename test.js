@@ -25,7 +25,7 @@ async function populateQueue() {
   for (let i = 0; i < TOTAL_USERS; i++) {
     const userId = `user_${i + 1}`;
     const userName = userNames[i];
-    const synergy = getRandomInt(1900, 1905); // Random synergy between 50–100
+    const synergy = getRandomInt(430, 470); // Random synergy between 50–100
 
     await db.ref(`matchmakingQueue/${userId}`).set({
       userId,
