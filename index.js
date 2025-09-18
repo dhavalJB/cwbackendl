@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { db } = require("./firebase");
+const { db, firestore } = require("./firebase");
 const { startMatchmaking } = require("./matchmaking");
 const {
   selectCard,
