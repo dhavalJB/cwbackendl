@@ -84,7 +84,6 @@ app.post("/api/battle/:matchId/cancelMatch", async (req, res) => {
 
 app.post("/telegram-bot", telegramWebhookHandler);
 
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 

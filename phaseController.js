@@ -1,7 +1,6 @@
 const { db } = require("./firebase");
 const { saveRoundData } = require("./controllers/battleController");
 const { PHASES, PHASE_TIMERS } = require("./weights/phaseConstants");
-const { resolveBattle } = require("./battleLogics");
 // Store active timers per match
 const activeTimers = {};
 
@@ -112,7 +111,6 @@ async function startPhaseLoop(matchId, startIndex = 0, startRound = 0) {
     // ----------------- Battle Phase -----------------
     if (phase === "battle") {
       console.log(`[Match ${matchId}] -> Battle started for Round ${round}`);
-      await resolveBattle(matchId);
       activeTimers[matchId] = setTimeout(async () => {
         await saveRoundData(matchId, round);
 
