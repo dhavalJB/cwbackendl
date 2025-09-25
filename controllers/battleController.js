@@ -3,10 +3,115 @@ const { ref, get, update } = require("firebase/database");
 const { db } = require("../firebase");
 const { PHASES, PHASE_TIMERS } = require("../weights/phaseConstants");
 
+// // ----------------- CARD SELECTION -----------------
+// const selectCard = async (req, res) => {
+//   const { matchId } = req.params;
+//   const { playerId, cardId, photo, stats } = req.body;
+
+//   try {
+//     const matchRef = ref(db, `ongoingBattles/${matchId}`);
+//     const snapshot = await get(matchRef);
+
+//     if (!snapshot.exists()) {
+//       return res.status(404).json({ error: "Match not found" });
+//     }
+
+//     const match = snapshot.val();
+//     if (match.currentPhase !== "selection") {
+//       return res.status(400).json({ error: "Not in selection phase" });
+//     }
+
+//     let dbKey = null;
+
+//     if (match.player1?.userId === playerId) {
+//       dbKey = "player1";
+//     } else if (match.player2?.userId === playerId) {
+//       dbKey = "player2";
+//     } else {
+//       return res.status(400).json({ error: "Invalid player" });
+//     }
+
+//     if (match[dbKey]?.currentRound?.cardId) {
+//       return res
+//         .status(400)
+//         .json({ error: "Card already selected this round" });
+//     }
+
+//     await update(ref(db, `ongoingBattles/${matchId}/${dbKey}/currentRound`), {
+//       cardId,
+//       cardPhotoSrc: photo,
+//       stats,
+//     });
+
+//     res.json({
+//       success: true,
+//       message: "Card selected",
+//       dbKey, // 👈 tell frontend which DB slot was updated
+//     });
+//   } catch (err) {
+//     console.error("Error selecting card:", err);
+//     res.status(500).json({ error: "Server error" });
+//   }
+// };
+
+// // ----------------- ABILITY SELECTION -----------------
+// const selectAbility = async (req, res) => {
+//   const { matchId } = req.params;
+//   const { playerId, abilityKey } = req.body;
+
+//   try {
+//     const matchRef = ref(db, `ongoingBattles/${matchId}`);
+//     const snapshot = await get(matchRef);
+
+//     if (!snapshot.exists()) {
+//       return res.status(404).json({ error: "Match not found" });
+//     }
+
+//     const match = snapshot.val();
+//     if (match.currentPhase !== "selection") {
+//       return res.status(400).json({ error: "Not in selection phase" });
+//     }
+
+//     let dbKey = null;
+
+//     if (match.player1?.userId === playerId) {
+//       dbKey = "player1";
+//     } else if (match.player2?.userId === playerId) {
+//       dbKey = "player2";
+//     } else {
+//       return res.status(400).json({ error: "Invalid player" });
+//     }
+
+//     const currentRoundRef = ref(db, `ongoingBattles/${matchId}/${dbKey}/currentRound`);
+//     const roundSnap = await get(currentRoundRef);
+
+//     // Ensure currentRound exists
+//     if (!roundSnap.exists()) {
+//       await set(currentRoundRef, {});
+//     }
+
+//     // Update ability selection
+//     await update(currentRoundRef, { abilitySelected: abilityKey });
+
+//     res.json({
+//       success: true,
+//       message: `Ability ${abilityKey} selected`,
+//       dbKey,
+//     });
+//   } catch (err) {
+//     console.error("Error selecting ability:", err);
+//     res.status(500).json({ error: "Server error" });
+//   }
+// };
+
 // ----------------- CARD SELECTION -----------------
 const selectCard = async (req, res) => {
   const { matchId } = req.params;
   const { playerId, cardId, photo, stats } = req.body;
+
+  console.log(
+    `[selectCard] Request received: matchId=${matchId}, playerId=${playerId}, cardId=${cardId}`
+  );
 
   try {
     const matchRef = ref(db, `ongoingBattles/${matchId}`);
@@ -22,34 +127,38 @@ const selectCard = async (req, res) => {
     }
 
     let dbKey = null;
+    if (match.player1?.userId === playerId) dbKey = "player1";
+    else if (match.player2?.userId === playerId) dbKey = "player2";
+    else return res.status(400).json({ error: "Invalid player" });
 
-    if (match.player1?.userId === playerId) {
-      dbKey = "player1";
-    } else if (match.player2?.userId === playerId) {
-      dbKey = "player2";
-    } else {
-      return res.status(400).json({ error: "Invalid player" });
-    }
+    // Ensure currentRound exists
+    const currentRoundRef = ref(
+      db,
+      `ongoingBattles/${matchId}/${dbKey}/currentRound`
+    );
+    const roundSnap = await get(currentRoundRef);
+    let currentRound = {};
+    if (roundSnap.exists()) currentRound = roundSnap.val();
 
-    if (match[dbKey]?.currentRound?.cardId) {
+    // ✅ Allow only one card selection per round
+    if (currentRound.cardId) {
       return res
         .status(400)
         .json({ error: "Card already selected this round" });
     }
 
-    await update(ref(db, `ongoingBattles/${matchId}/${dbKey}/currentRound`), {
+    await update(currentRoundRef, {
       cardId,
       cardPhotoSrc: photo,
       stats,
     });
 
-    res.json({
-      success: true,
-      message: "Card selected",
-      dbKey, // 👈 tell frontend which DB slot was updated
-    });
+    console.log(
+      `[selectCard] Card selection saved for player ${dbKey}: ${cardId}`
+    );
+    res.json({ success: true, message: "Card selected", dbKey });
   } catch (err) {
-    console.error("Error selecting card:", err);
+    console.error("[selectCard] Error:", err);
     res.status(500).json({ error: "Server error" });
   }
 };
@@ -59,6 +168,10 @@ const selectAbility = async (req, res) => {
   const { matchId } = req.params;
   const { playerId, abilityKey } = req.body;
 
+  console.log(
+    `[selectAbility] Request received: matchId=${matchId}, playerId=${playerId}, abilityKey=${abilityKey}`
+  );
+
   try {
     const matchRef = ref(db, `ongoingBattles/${matchId}`);
     const snapshot = await get(matchRef);
@@ -73,37 +186,40 @@ const selectAbility = async (req, res) => {
     }
 
     let dbKey = null;
+    if (match.player1?.userId === playerId) dbKey = "player1";
+    else if (match.player2?.userId === playerId) dbKey = "player2";
+    else return res.status(400).json({ error: "Invalid player" });
 
-    if (match.player1?.userId === playerId) {
-      dbKey = "player1";
-    } else if (match.player2?.userId === playerId) {
-      dbKey = "player2";
-    } else {
-      return res.status(400).json({ error: "Invalid player" });
-    }
-
-    const currentRoundRef = ref(db, `ongoingBattles/${matchId}/${dbKey}/currentRound`);
+    const currentRoundRef = ref(
+      db,
+      `ongoingBattles/${matchId}/${dbKey}/currentRound`
+    );
     const roundSnap = await get(currentRoundRef);
+    let currentRound = {};
+    if (roundSnap.exists()) currentRound = roundSnap.val();
 
-    // Ensure currentRound exists
-    if (!roundSnap.exists()) {
-      await set(currentRoundRef, {});
+    // ✅ Allow only one ability selection per round
+    if (currentRound.abilitySelected) {
+      return res
+        .status(400)
+        .json({ error: "Ability already selected this round" });
     }
 
-    // Update ability selection
     await update(currentRoundRef, { abilitySelected: abilityKey });
 
+    console.log(
+      `[selectAbility] Ability selection saved for player ${dbKey}: ${abilityKey}`
+    );
     res.json({
       success: true,
       message: `Ability ${abilityKey} selected`,
       dbKey,
     });
   } catch (err) {
-    console.error("Error selecting ability:", err);
+    console.error("[selectAbility] Error:", err);
     res.status(500).json({ error: "Server error" });
   }
 };
-
 
 /**
  * Saves current round data into previousRounds and clears currentRound

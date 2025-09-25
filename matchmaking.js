@@ -1,15 +1,53 @@
 const { startPhaseLoop } = require("./phaseController");
-
+const { startBotForMatch } = require("./controllers/botController"); // your bot script
 const crypto = require("crypto");
+
 const SYNERGY_TOLERANCE = 50;
+const BOT_THRESHOLD = 5000; // 5 seconds
+const BOT_PREFIX = "AIBOTPLAYER_";
 
 function generateMatchId() {
   return crypto.randomBytes(3).toString("hex");
 }
 
+function generateBotId() {
+  return BOT_PREFIX + crypto.randomBytes(3).toString("hex");
+}
+
 function startMatchmaking(db) {
   const queueRef = db.ref("matchmakingQueue");
   let processing = false;
+
+  // Add bot to queue if a human has been waiting too long
+  async function addBotFallback() {
+    try {
+      const snapshot = await queueRef.once("value");
+      const users = snapshot.val() || {};
+
+      for (const userId of Object.keys(users)) {
+        const user = users[userId];
+
+        // Skip bots
+        if (user.userId.startsWith(BOT_PREFIX)) continue;
+
+        const waitingTime = Date.now() - (user.joinedAt || Date.now());
+        if (waitingTime >= BOT_THRESHOLD) {
+          const botId = generateBotId();
+          const botData = {
+            userId: botId,
+            userName: user.userName,
+            synergy: user.synergy,
+            joinedAt: Date.now(),
+          };
+
+          await queueRef.child(botId).set(botData);
+          console.log(`Added bot ${botData.userId} for ${user.userName}`);
+        }
+      }
+    } catch (err) {
+      console.error("Bot fallback error:", err);
+    }
+  }
 
   async function processQueue() {
     if (processing) return;
@@ -19,7 +57,6 @@ function startMatchmaking(db) {
       const snapshot = await queueRef.once("value");
       let users = snapshot.val() || {};
       let userIds = Object.keys(users);
-
       let matchedThisBatch = new Set();
       let foundMatch = false;
 
@@ -36,7 +73,6 @@ function startMatchmaking(db) {
             if (!u2 || matchedThisBatch.has(u2Id)) continue;
 
             const synergyDiff = Math.abs(u1.synergy - u2.synergy);
-
             if (synergyDiff <= SYNERGY_TOLERANCE) {
               matchedThisBatch.add(u1Id);
               matchedThisBatch.add(u2Id);
@@ -67,11 +103,23 @@ function startMatchmaking(db) {
                 `Matched ${u1.userName} with ${u2.userName} | Match ID: ${matchId}`
               );
 
-              // Refresh queue snapshot after removal
+              // ✅ Trigger bot if present
+              if (
+                u1.userId.startsWith(BOT_PREFIX) ||
+                u2.userId.startsWith(BOT_PREFIX)
+              ) {
+                const botId = u1.userId.startsWith(BOT_PREFIX)
+                  ? u1.userId
+                  : u2.userId;
+                startBotForMatch(matchId, botId);
+                console.log(`Bot ${botId} started for Match ${matchId}`);
+              }
+
+              // Refresh snapshot
               users = (await queueRef.once("value")).val() || {};
               userIds = Object.keys(users);
               foundMatch = true;
-              break; // restart outer loop fresh
+              break;
             }
           }
           if (foundMatch) break;
@@ -84,15 +132,12 @@ function startMatchmaking(db) {
     }
   }
 
-  // Whenever a user joins the queue, try matching
-  queueRef.on("child_added", () => {
-    processQueue();
-  });
+  // Trigger matchmaking on queue changes
+  queueRef.on("child_added", () => processQueue());
+  queueRef.on("child_removed", () => processQueue());
 
-  // Whenever a user leaves (after a match), also re-check
-  queueRef.on("child_removed", () => {
-    processQueue();
-  });
+  // Regularly check queue for humans waiting too long
+  setInterval(addBotFallback, 2000);
 }
 
 module.exports = { startMatchmaking };

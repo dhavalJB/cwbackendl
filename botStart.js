@@ -112,6 +112,9 @@ async function handleStartCommand(msg, match) {
 }
 
 // Webhook handler to plug into Express
+
+
+
 async function telegramWebhookHandler(req, res) {
   if (req.method !== "POST") return res.status(405).send("Method Not Allowed");
   try {
