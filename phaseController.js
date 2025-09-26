@@ -1,7 +1,8 @@
 const { db } = require("./firebase");
 const { saveRoundData } = require("./controllers/battleController");
 const { PHASES, PHASE_TIMERS } = require("./weights/phaseConstants");
-// Store active timers per match
+const executeBattlePhase = require("./battleLogics");
+
 const activeTimers = {};
 
 // ----------------- Role Assigner -----------------
@@ -106,11 +107,24 @@ async function startPhaseLoop(matchId, startIndex = 0, startRound = 0) {
     if (phase === "cooldown" || phase === "selection") {
       const isFirstSelection = round === 0;
       await roleAssigner(matchRef, round, isFirstSelection);
+
+      if (!matchData.maxSynergy) {
+        const { player1, player2 } = matchData;
+        const maxSynergy = Math.max(
+          player1.initialSynergy || player1.synergy || 0,
+          player2.initialSynergy || player2.synergy || 0
+        );
+        await matchRef.update({ maxSynergy });
+        console.log(
+          `[Match ${matchRef.key}] -> maxSynergy set to ${maxSynergy}`
+        );
+      }
     }
 
     // ----------------- Battle Phase -----------------
     if (phase === "battle") {
       console.log(`[Match ${matchId}] -> Battle started for Round ${round}`);
+      const battleResult = await executeBattlePhase(matchId);
       activeTimers[matchId] = setTimeout(async () => {
         await saveRoundData(matchId, round);
 

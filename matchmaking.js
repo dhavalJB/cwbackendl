@@ -37,6 +37,7 @@ function startMatchmaking(db) {
             userId: botId,
             userName: user.userName,
             synergy: user.synergy,
+            intitialSynergy: user.synergy,
             joinedAt: Date.now(),
           };
 

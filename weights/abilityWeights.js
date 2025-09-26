@@ -1,6 +1,7 @@
 const weightConfig = {
-  titan_strike: {
+  TITAN_STRIKE: {
     type: "attack",
+    key: "Titan's Strike",
     stats: ["attack", "powers"],
     weights: {
       attack: 1.0,
@@ -11,8 +12,9 @@ const weightConfig = {
       vitality: 0,
     },
   },
-  berserkers_fury: {
+  BERSERKERS_FURY: {
     type: "attack",
+    key: "Berserkers Fury",
     stats: ["powers", "attack"],
     weights: {
       attack: 0.5,
@@ -23,8 +25,9 @@ const weightConfig = {
       vitality: 0,
     },
   },
-  mindwrap: {
+  MIND_WRAP: {
     type: "attack",
+    key: "Mind Wrap",
     stats: ["intelligence"],
     weights: {
       attack: 0,
@@ -35,8 +38,9 @@ const weightConfig = {
       vitality: 0,
     },
   },
-  twin_strike: {
+  TWIN_STRIKE: {
     type: "attack",
+    key: "Twin Strike",
     stats: ["attack", "agility"],
     weights: {
       attack: 0.8,
@@ -47,8 +51,9 @@ const weightConfig = {
       vitality: 0,
     },
   },
-  soul_leech: {
+  SOUL_LEECH: {
     type: "attack",
+    key: "Soul Leech",
     stats: ["intelligence", "powers"],
     weights: {
       attack: 0,
@@ -59,8 +64,9 @@ const weightConfig = {
       vitality: 0,
     },
   },
-  fury_unleashed: {
+  FURY_UNLEASHED: {
     type: "attack",
+    key: "Fury Unleashed",
     stats: ["attack", "vitality"],
     weights: {
       attack: 0.7,
@@ -71,8 +77,9 @@ const weightConfig = {
       vitality: 0.3,
     },
   },
-  aegis_ward: {
+  AEGIS_WARD: {
     type: "defense",
+    key: "Aegis Ward",
     stats: ["armor", "vitality"],
     weights: {
       attack: 0,
@@ -83,8 +90,9 @@ const weightConfig = {
       vitality: 0.3,
     },
   },
-  celestial_rejuvenation: {
+  CELESTIAL_REJUVENATION: {
     type: "defense",
+    key: "Celestial Rejuvenation",
     stats: ["vitality", "agility"],
     weights: {
       attack: 0,
@@ -95,8 +103,9 @@ const weightConfig = {
       vitality: 0.6,
     },
   },
-  guardians_bulwark: {
+  GUARDIANS_BULWARK: {
     type: "defense",
+    key: "Guardian's Bulwark",
     stats: ["armor"],
     weights: {
       attack: 0,
@@ -107,8 +116,9 @@ const weightConfig = {
       vitality: 0,
     },
   },
-  arcane_overcharge: {
+  ARCANE_OVERCHARGE: {
     type: "defense",
+    key: "Arcane Overcharge",
     stats: ["vitality", "intelligence"],
     weights: {
       attack: 0,
@@ -120,6 +130,30 @@ const weightConfig = {
     },
   },
 };
+
+const MAX_LEVEL = 10;
+
+/**
+ * Returns scaled ability weights for a given ability and level
+ * @param {string} abilityKey - e.g., "TITAN_STRIKE"
+ * @param {number} level - 1 to 10
+ * @returns {object} scaledWeights - { attack, armor, agility, intelligence, powers, vitality }
+ */
+function getAbilityWeights(abilityKey, level = 1) {
+  if (!weightConfig[abilityKey]) {
+    throw new Error(`Ability "${abilityKey}" not found in weightConfig`);
+  }
+
+  const baseWeights = weightConfig[abilityKey].weights;
+  const multiplier = Math.min(Math.max(level, 1), MAX_LEVEL) / MAX_LEVEL;
+
+  const scaledWeights = {};
+  for (const stat of Object.keys(baseWeights)) {
+    scaledWeights[stat] = baseWeights[stat] * multiplier;
+  }
+
+  return scaledWeights;
+}
 
 const abilityNameMap = {
   "Berserkers Fury": "berserkers_fury",
@@ -144,4 +178,10 @@ const defaultWeights = {
   vitality: 0,
 };
 
-module.exports = { weightConfig, abilityNameMap, defaultWeights };
+module.exports = {
+  weightConfig,
+  abilityNameMap,
+  defaultWeights,
+  getAbilityWeights,
+  MAX_LEVEL,
+};
