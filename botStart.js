@@ -54,7 +54,7 @@ async function handleStartCommand(msg, match) {
         lastName: msg.from.last_name || "",
         referredBy: referrerId || null,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        coins: 0,
+        coins: 1000000,
       });
     } else if (referrerId && !userDoc.data().referredBy) {
       await userRef.update({ referredBy: referrerId });
@@ -112,8 +112,6 @@ async function handleStartCommand(msg, match) {
 }
 
 // Webhook handler to plug into Express
-
-
 
 async function telegramWebhookHandler(req, res) {
   if (req.method !== "POST") return res.status(405).send("Method Not Allowed");
