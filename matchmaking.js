@@ -16,6 +16,8 @@ function generateBotId() {
 
 function startMatchmaking(db) {
   const queueRef = db.ref("matchmakingQueue");
+  const tutorialQueueRef = db.ref("tutorialQueue"); // New tutorial queue
+
   let processing = false;
 
   // Add bot to queue if a human has been waiting too long
@@ -27,7 +29,6 @@ function startMatchmaking(db) {
       for (const userId of Object.keys(users)) {
         const user = users[userId];
 
-        // Skip bots
         if (user.userId.startsWith(BOT_PREFIX)) continue;
 
         const waitingTime = Date.now() - (user.joinedAt || Date.now());
@@ -47,6 +48,58 @@ function startMatchmaking(db) {
       }
     } catch (err) {
       console.error("Bot fallback error:", err);
+    }
+  }
+
+  // ---------------- Tutorial Queue Processing ----------------
+  async function processTutorialQueue() {
+    try {
+      const snapshot = await tutorialQueueRef.once("value");
+      const tutorialUsers = snapshot.val() || {};
+
+      for (const userId of Object.keys(tutorialUsers)) {
+        const user = tutorialUsers[userId];
+
+        if (!user) continue;
+
+        // Immediately assign a bot
+        const botId = generateBotId();
+        const botData = {
+          userId: botId,
+          userName: "Tutorial Bot",
+          synergy: user.synergy,
+          intitialSynergy: user.synergy,
+          joinedAt: Date.now(),
+        };
+
+        const matchId = generateMatchId();
+
+        await Promise.all([
+          tutorialQueueRef.child(userId).remove(),
+          db.ref(`ongoingBattles/${matchId}`).set({
+            matchId,
+            currentPhase: "cooldown",
+            winner: null,
+            phaseStartTime: Date.now(),
+            player1: user,
+            player2: botData,
+            startedAt: Date.now(),
+            maxRounds: 1, // tutorial can have 1 round
+            round: 1,
+            player1End: false,
+            player2End: false,
+            timersType: "tutorial", // Important: tutorial timers
+          }),
+        ]);
+
+        console.log(
+          `Tutorial user ${user.userName} assigned bot ${botId} | Match ID: ${matchId}`
+        );
+        startPhaseLoop(matchId);
+        startBotForMatch(matchId, botId);
+      }
+    } catch (err) {
+      console.error("Tutorial queue error:", err);
     }
   }
 
@@ -95,6 +148,7 @@ function startMatchmaking(db) {
                   round: 1,
                   player1End: false,
                   player2End: false,
+                  timersType: "normal",
                 }),
               ]);
 
@@ -139,6 +193,7 @@ function startMatchmaking(db) {
 
   // Regularly check queue for humans waiting too long
   setInterval(addBotFallback, 2000);
+  setInterval(processTutorialQueue, 1000);
 }
 
 module.exports = { startMatchmaking };

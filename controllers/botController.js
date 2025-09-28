@@ -143,6 +143,15 @@ async function startBotForMatch(matchId, botId) {
               );
             }
 
+            // 4️⃣ End bot turn immediately after both selections
+            await axios.post(
+              `http://localhost:3000/api/battle/${matchId}/endTurn`,
+              {
+                playerId: botId,
+              }
+            );
+            console.log(`[Bot ${botId}] ended turn`);
+
             // Loop for next selection phase
             selectionLoop();
           } catch (err) {

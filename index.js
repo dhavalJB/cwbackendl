@@ -10,6 +10,7 @@ const {
 const { endRound } = require("./phaseController");
 const axios = require("axios");
 const { telegramWebhookHandler } = require("./botStart");
+const { setTutorialFlag } = require("./controllers/tutorialController");
 
 const app = express();
 
@@ -83,6 +84,7 @@ app.post("/api/battle/:matchId/cancelMatch", async (req, res) => {
 });
 
 app.post("/telegram-bot", telegramWebhookHandler);
+app.post("/api/set-tutorial-flag", setTutorialFlag);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

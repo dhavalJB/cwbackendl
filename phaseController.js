@@ -85,7 +85,9 @@ async function startPhaseLoop(matchId, startIndex = 0, startRound = 0) {
     if (matchData.currentPhase === "cancelled") return;
 
     let phase = PHASES[currentIndex];
-    let timer = PHASE_TIMERS[phase];
+    // let timer = PHASE_TIMERS[phase];
+    // let timer = PHASE_TIMERS[matchData.timersType][phase];
+    let timer = PHASE_TIMERS.get(phase, round, matchData.timersType);
 
     // ----------------- Skip selection -> battle -----------------
     if (phase === "selection") {
