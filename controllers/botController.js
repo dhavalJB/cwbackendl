@@ -11,6 +11,9 @@ const {
 const MIN_DELAY = 1000; // 1s minimum delay
 const MAX_DELAY = 3000; // 3s maximum delay
 
+//const backendURL = "http://localhost:3000";
+const backendURL = "https://cwbackendl.onrender.com";
+
 async function startBotForMatch(matchId, botId) {
   try {
     await new Promise((resolve) => setTimeout(resolve, 3000));
@@ -113,7 +116,7 @@ async function startBotForMatch(matchId, botId) {
             // 1️⃣ Select card if not already selected
             if (card) {
               await axios.post(
-                `http://localhost:3000/api/battle/${matchId}/select-card`,
+                `${backendURL}/api/battle/${matchId}/select-card`,
                 {
                   playerId: botId,
                   cardId: card.cardId,
@@ -132,7 +135,7 @@ async function startBotForMatch(matchId, botId) {
               const abilityHumanName = ABILITIES[abilityKey];
 
               await axios.post(
-                `http://localhost:3000/api/battle/${matchId}/select-ability`,
+                `${backendURL}/api/battle/${matchId}/select-ability`,
                 {
                   playerId: botId,
                   abilityKey: abilityHumanName, // send "Aegis Ward" instead of "AEGIS_WARD"
@@ -144,12 +147,9 @@ async function startBotForMatch(matchId, botId) {
             }
 
             // 4️⃣ End bot turn immediately after both selections
-            await axios.post(
-              `http://localhost:3000/api/battle/${matchId}/endTurn`,
-              {
-                playerId: botId,
-              }
-            );
+            await axios.post(`${backendURL}/api/battle/${matchId}/endTurn`, {
+              playerId: botId,
+            });
             console.log(`[Bot ${botId}] ended turn`);
 
             // Loop for next selection phase
