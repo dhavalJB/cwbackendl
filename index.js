@@ -84,6 +84,44 @@ app.post("/api/battle/:matchId/cancelMatch", async (req, res) => {
 });
 
 app.post("/telegram-bot", telegramWebhookHandler);
+
+app.get("/invite/:referrerId", (req, res) => {
+  const { referrerId } = req.params;
+
+  // Render HTML with OG tags
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Join Clash Warriors!</title>
+      <meta name="description" content="Join Clash Warriors, earn $WARS tokens, and battle your friends!">
+      
+      <!-- Open Graph / Facebook -->
+      <meta property="og:type" content="website">
+      <meta property="og:url" content="https://share.clashwarriors.tech/invite/${referrerId}">
+      <meta property="og:title" content="Join Clash Warriors!">
+      <meta property="og:description" content="Battle in real-time PvP, earn $WARS tokens, and unlock heroes!">
+      <meta property="og:image" content="https://adorable-fudge-c73118.netlify.app/assets/social/test.png">
+      
+      <!-- Twitter -->
+      <meta name="twitter:card" content="summary_large_image">
+      <meta name="twitter:title" content="Join Clash Warriors!">
+      <meta name="twitter:description" content="Battle in real-time PvP, earn $WARS tokens, and unlock heroes!">
+      <meta name="twitter:image" content="https://adorable-fudge-c73118.netlify.app/assets/social/test.png">
+    </head>
+    <body>
+      <script>
+        // Redirect to the bot start link with referrerId
+        window.location.href = "https://t.me/clash_warriors_bot?start=${referrerId}";
+      </script>
+      <p>Redirecting to Telegram...</p>
+    </body>
+    </html>
+  `);
+});
+
 app.post("/api/set-tutorial-flag", setTutorialFlag);
 
 const PORT = process.env.PORT || 3000;

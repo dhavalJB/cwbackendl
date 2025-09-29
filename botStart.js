@@ -2,7 +2,9 @@ require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 const { firestore, admin } = require("./firebase");
 
-const TELEGRAM_BOT_TOKEN = "8140480108:AAF0mLsV-QrcJKNfIxggRPOknRoNd6UwKOU";
+const TELEGRAM_BOT_TOKEN =
+  process.env.TELEGRAM_BOT_TOKEN ||
+  "8140480108:AAF0mLsV-QrcJKNfIxggRPOknRoNd6UwKOU";
 
 if (!TELEGRAM_BOT_TOKEN) {
   console.error("❌ TELEGRAM_BOT_TOKEN is missing!");
@@ -41,33 +43,37 @@ Ready to start? Tap *Start Game* below!
 // /start command handler
 async function handleStartCommand(msg, match) {
   const chatId = msg.chat.id.toString();
-  const referrerId = match[1] ? match[1].trim() : null;
   const newUserId = msg.from.id.toString();
+  const referrerId = match[1] ? match[1].trim() : null; // inviter's Telegram ID
 
   try {
     const userRef = firestore.collection("users").doc(newUserId);
     const userDoc = await userRef.get();
 
+    // 1️⃣ New user onboarding
     if (!userDoc.exists) {
       await userRef.set({
         firstName: msg.from.first_name || "",
         lastName: msg.from.last_name || "",
         referredBy: referrerId || null,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        coins: 1000000,
+        coins: 1000000, // initial coins
       });
     } else if (referrerId && !userDoc.data().referredBy) {
+      // update referral if not set
       await userRef.update({ referredBy: referrerId });
     }
 
-    // Handle referrals
+    // 2️⃣ Handle referral logic
     if (referrerId && referrerId !== newUserId) {
       const inviterRef = firestore.collection("users").doc(referrerId);
       const friendDoc = await inviterRef
         .collection("friends")
         .doc(newUserId)
         .get();
+
       if (!friendDoc.exists) {
+        // Log the referral
         await inviterRef
           .collection("friends")
           .doc(newUserId)
@@ -77,20 +83,28 @@ async function handleStartCommand(msg, match) {
             invitedAt: admin.firestore.FieldValue.serverTimestamp(),
           });
 
+        // Grant referral bonuses to both
         const batch = firestore.batch();
         batch.update(userRef, {
-          coins: admin.firestore.FieldValue.increment(100000),
+          coins: admin.firestore.FieldValue.increment(100000), // bonus to new user
         });
         batch.update(inviterRef, {
-          coins: admin.firestore.FieldValue.increment(100000),
+          coins: admin.firestore.FieldValue.increment(100000), // bonus to inviter
         });
         await batch.commit();
+
+        // Optional: send message to inviter
+        await bot.sendMessage(
+          referrerId,
+          `🎉 You just invited ${msg.from.first_name}! Both of you received 100,000 coins.`
+        );
       }
     }
 
+    // 3️⃣ Send welcome image & description
     const opts = {
       parse_mode: "Markdown",
-      caption: description.slice(0, 1024), // ensure max 1024 chars
+      caption: description.slice(0, 1024),
       reply_markup: {
         inline_keyboard: [
           [{ text: "🎮 Start Game", web_app: { url: miniAppUrl } }],
