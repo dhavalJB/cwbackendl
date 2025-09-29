@@ -2,9 +2,7 @@ require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 const { firestore, admin } = require("./firebase");
 
-const TELEGRAM_BOT_TOKEN =
-  process.env.TELEGRAM_BOT_TOKEN ||
-  "8140480108:AAF0mLsV-QrcJKNfIxggRPOknRoNd6UwKOU";
+const TELEGRAM_BOT_TOKEN = "8140480108:AAF0mLsV-QrcJKNfIxggRPOknRoNd6UwKOU";
 
 if (!TELEGRAM_BOT_TOKEN) {
   console.error("❌ TELEGRAM_BOT_TOKEN is missing!");
