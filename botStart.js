@@ -12,7 +12,7 @@ if (!TELEGRAM_BOT_TOKEN) {
 // Bot instance (no polling)
 const bot = new TelegramBot(TELEGRAM_BOT_TOKEN, { polling: false });
 
-const miniAppUrl = "https://www.clashwarriors.tech/";
+const miniAppUrl = "https://play.clashwarriors.tech/";
 const imageUrl =
   "https://adorable-fudge-c73118.netlify.app/assets/social/test.png";
 const description = `
