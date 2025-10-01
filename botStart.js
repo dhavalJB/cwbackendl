@@ -50,16 +50,45 @@ async function handleStartCommand(msg, match) {
 
     // 1️⃣ New user onboarding
     if (!userDoc.exists) {
+      // Fetch referrer data if exists
+      let referrerData = null;
+      if (referrerId) {
+        const referrerDoc = await firestore
+          .collection("users")
+          .doc(referrerId)
+          .get();
+        if (referrerDoc.exists) {
+          referrerData = {
+            id: referrerId,
+            firstName: referrerDoc.data().firstName || "",
+            lastName: referrerDoc.data().lastName || "",
+          };
+        }
+      }
+
       await userRef.set({
         firstName: msg.from.first_name || "",
         lastName: msg.from.last_name || "",
-        referredBy: referrerId || null,
+        referredBy: referrerData || null, // store object instead of just ID
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
         coins: 1000000, // initial coins
       });
     } else if (referrerId && !userDoc.data().referredBy) {
       // update referral if not set
-      await userRef.update({ referredBy: referrerId });
+      const referrerDoc = await firestore
+        .collection("users")
+        .doc(referrerId)
+        .get();
+      let referrerData = null;
+      if (referrerDoc.exists) {
+        referrerData = {
+          id: referrerId,
+          firstName: referrerDoc.data().firstName || "",
+          lastName: referrerDoc.data().lastName || "",
+        };
+      }
+
+      await userRef.update({ referredBy: referrerData });
     }
 
     // 2️⃣ Handle referral logic
