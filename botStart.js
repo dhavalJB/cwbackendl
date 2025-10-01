@@ -2,7 +2,7 @@ require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 const { firestore, admin } = require("./firebase");
 
-const TELEGRAM_BOT_TOKEN = "8140480108:AAF0mLsV-QrcJKNfIxggRPOknRoNd6UwKOU";
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "8140480108:AAF0mLsV-QrcJKNfIxggRPOknRoNd6UwKOU";
 
 if (!TELEGRAM_BOT_TOKEN) {
   console.error("❌ TELEGRAM_BOT_TOKEN is missing!");
@@ -13,8 +13,7 @@ if (!TELEGRAM_BOT_TOKEN) {
 const bot = new TelegramBot(TELEGRAM_BOT_TOKEN, { polling: false });
 
 const miniAppUrl = "https://play.clashwarriors.tech/";
-const imageUrl =
-  "https://adorable-fudge-c73118.netlify.app/assets/social/test.png";
+const imageUrl = "https://adorable-fudge-c73118.netlify.app/assets/social/test.png";
 const description = `
 🎮 *Welcome to Clash Warriors!*
 
@@ -42,44 +41,14 @@ Ready to start? Tap *Start Game* below!
 async function handleStartCommand(msg, match) {
   const chatId = msg.chat.id.toString();
   const newUserId = msg.from.id.toString();
-  const referrerId = match[1] ? match[1].trim() : null; // inviter's Telegram ID
+  const referrerId = match[1] ? match[1].trim() : null;
+
+  let referrerData = null;
 
   try {
-    const userRef = firestore.collection("users").doc(newUserId);
-    const userDoc = await userRef.get();
-
-    // 1️⃣ New user onboarding
-    if (!userDoc.exists) {
-      // Fetch referrer data if exists
-      let referrerData = null;
-      if (referrerId) {
-        const referrerDoc = await firestore
-          .collection("users")
-          .doc(referrerId)
-          .get();
-        if (referrerDoc.exists) {
-          referrerData = {
-            id: referrerId,
-            firstName: referrerDoc.data().firstName || "",
-            lastName: referrerDoc.data().lastName || "",
-          };
-        }
-      }
-
-      await userRef.set({
-        firstName: msg.from.first_name || "",
-        lastName: msg.from.last_name || "",
-        referredBy: referrerData || null, // store object instead of just ID
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        coins: 1000000, // initial coins
-      });
-    } else if (referrerId && !userDoc.data().referredBy) {
-      // update referral if not set
-      const referrerDoc = await firestore
-        .collection("users")
-        .doc(referrerId)
-        .get();
-      let referrerData = null;
+    // 1️⃣ Fetch referrer info if exists
+    if (referrerId) {
+      const referrerDoc = await firestore.collection("users").doc(referrerId).get();
       if (referrerDoc.exists) {
         referrerData = {
           id: referrerId,
@@ -87,52 +56,54 @@ async function handleStartCommand(msg, match) {
           lastName: referrerDoc.data().lastName || "",
         };
       }
+    }
 
+    // 2️⃣ Fetch new user
+    const userRef = firestore.collection("users").doc(newUserId);
+    const userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      // Create new user with referredBy map
+      await userRef.set({
+        firstName: msg.from.first_name || "",
+        lastName: msg.from.last_name || "",
+        referredBy: referrerData || null,
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        coins: 1000000,
+      });
+    } else if (referrerData && !userDoc.data().referredBy) {
       await userRef.update({ referredBy: referrerData });
     }
 
-    // 2️⃣ Handle referral logic
-    if (referrerId && referrerId !== newUserId) {
+    // 3️⃣ Handle referral logic
+    if (referrerData && referrerId !== newUserId) {
       const inviterRef = firestore.collection("users").doc(referrerId);
-      const friendDoc = await inviterRef
-        .collection("friends")
-        .doc(newUserId)
-        .get();
+      const friendDoc = await inviterRef.collection("friends").doc(newUserId).get();
 
       if (!friendDoc.exists) {
-        // Log the referral with new user's info
-        await inviterRef
-          .collection("friends")
-          .doc(newUserId)
-          .set({
-            id: newUserId,
-            firstName: msg.from.first_name || "",
-            lastName: msg.from.last_name || "",
-            invitedAt: admin.firestore.FieldValue.serverTimestamp(),
-          });
+        // Inviter's friends collection: add new user
+        await inviterRef.collection("friends").doc(newUserId).set({
+          id: newUserId,
+          firstName: msg.from.first_name || "",
+          lastName: msg.from.last_name || "",
+          invitedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
 
-        // Also store the inviter info in the new user's friends subcollection (mirroring structure)
-        await userRef
-          .collection("friends")
-          .doc(referrerId)
-          .set({
-            id: referrerId,
-            firstName: referrerData?.firstName || "",
-            lastName: referrerData?.lastName || "",
-            invitedAt: admin.firestore.FieldValue.serverTimestamp(),
-          });
+        // New user's friends collection: add inviter
+        await userRef.collection("friends").doc(referrerId).set({
+          id: referrerId,
+          firstName: referrerData.firstName,
+          lastName: referrerData.lastName,
+          invitedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
 
-        // Grant referral bonuses to both
+        // 4️⃣ Grant referral coins
         const batch = firestore.batch();
-        batch.update(userRef, {
-          coins: admin.firestore.FieldValue.increment(1000000), // bonus to new user
-        });
-        batch.update(inviterRef, {
-          coins: admin.firestore.FieldValue.increment(1000000), // bonus to inviter
-        });
+        batch.update(userRef, { coins: admin.firestore.FieldValue.increment(1000000) });
+        batch.update(inviterRef, { coins: admin.firestore.FieldValue.increment(1000000) });
         await batch.commit();
 
-        // Optional: send message to inviter
+        // Notify inviter
         await bot.sendMessage(
           referrerId,
           `🎉 You just invited ${msg.from.first_name}! Both of you received 1,000,000 coins.`
@@ -140,19 +111,14 @@ async function handleStartCommand(msg, match) {
       }
     }
 
-    // 3️⃣ Send welcome image & description
+    // 5️⃣ Send welcome image + inline buttons
     const opts = {
       parse_mode: "Markdown",
       caption: description.slice(0, 1024),
       reply_markup: {
         inline_keyboard: [
           [{ text: "🎮 Start Game", web_app: { url: miniAppUrl } }],
-          [
-            {
-              text: "📢 Join Announcement Channel",
-              url: "https://t.me/clash_warriors_announcement",
-            },
-          ],
+          [{ text: "📢 Join Announcement Channel", url: "https://t.me/clash_warriors_announcement" }],
         ],
       },
     };
@@ -160,14 +126,24 @@ async function handleStartCommand(msg, match) {
     await bot.sendPhoto(chatId, imageUrl, opts);
   } catch (err) {
     console.error("❌ Telegram /start error:", err);
-    bot.sendMessage(chatId, description, { parse_mode: "Markdown" });
+
+    // Fallback: always send text with buttons
+    await bot.sendMessage(chatId, description, {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "🎮 Start Game", web_app: { url: miniAppUrl } }],
+          [{ text: "📢 Join Announcement Channel", url: "https://t.me/clash_warriors_announcement" }],
+        ],
+      },
+    });
   }
 }
 
-// Webhook handler to plug into Express
-
+// Webhook handler for Express
 async function telegramWebhookHandler(req, res) {
   if (req.method !== "POST") return res.status(405).send("Method Not Allowed");
+
   try {
     const update = req.body;
     if (update.message && update.message.text) {
