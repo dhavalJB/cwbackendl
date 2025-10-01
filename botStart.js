@@ -100,30 +100,42 @@ async function handleStartCommand(msg, match) {
         .get();
 
       if (!friendDoc.exists) {
-        // Log the referral
+        // Log the referral with new user's info
         await inviterRef
           .collection("friends")
           .doc(newUserId)
           .set({
+            id: newUserId,
             firstName: msg.from.first_name || "",
             lastName: msg.from.last_name || "",
+            invitedAt: admin.firestore.FieldValue.serverTimestamp(),
+          });
+
+        // Also store the inviter info in the new user's friends subcollection (mirroring structure)
+        await userRef
+          .collection("friends")
+          .doc(referrerId)
+          .set({
+            id: referrerId,
+            firstName: referrerData?.firstName || "",
+            lastName: referrerData?.lastName || "",
             invitedAt: admin.firestore.FieldValue.serverTimestamp(),
           });
 
         // Grant referral bonuses to both
         const batch = firestore.batch();
         batch.update(userRef, {
-          coins: admin.firestore.FieldValue.increment(100000), // bonus to new user
+          coins: admin.firestore.FieldValue.increment(1000000), // bonus to new user
         });
         batch.update(inviterRef, {
-          coins: admin.firestore.FieldValue.increment(100000), // bonus to inviter
+          coins: admin.firestore.FieldValue.increment(1000000), // bonus to inviter
         });
         await batch.commit();
 
         // Optional: send message to inviter
         await bot.sendMessage(
           referrerId,
-          `🎉 You just invited ${msg.from.first_name}! Both of you received 100,000 coins.`
+          `🎉 You just invited ${msg.from.first_name}! Both of you received 1,000,000 coins.`
         );
       }
     }
