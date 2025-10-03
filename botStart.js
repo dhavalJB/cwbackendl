@@ -237,6 +237,47 @@ async function handleFriendlyBattle(msg, match) {
   }
 }
 
+// Send-invite handler
+async function sendInviteHandler(req, res) {
+  const { fromUser, toUsername, matchCode } = req.body;
+  try {
+    const usersRef = firestore.collection("users");
+    const snapshot = await usersRef.where("username", "==", toUsername).get();
+
+    if (snapshot.empty)
+      return res.json({
+        success: false,
+        error: "Player must start the bot first.",
+      });
+
+    const targetChatId = snapshot.docs[0].data().userId;
+
+    await bot.sendMessage(
+      targetChatId,
+      `⚔️ ${fromUser} has invited you to a friendly battle!`,
+      {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: "🎮 Start Game",
+                web_app: {
+                  url: `https://play.clashwarriors.tech/battleInvite/${matchCode}`,
+                },
+              },
+            ],
+          ],
+        },
+      }
+    );
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    return res.json({ success: false, error: err.message });
+  }
+}
+
 // Webhook handler for Express
 async function telegramWebhookHandler(req, res) {
   if (req.method !== "POST") return res.status(405).send("Method Not Allowed");
@@ -266,4 +307,4 @@ async function telegramWebhookHandler(req, res) {
   }
 }
 
-module.exports = { telegramWebhookHandler };
+module.exports = { telegramWebhookHandler, sendInviteHandler };

@@ -9,7 +9,7 @@ const {
 } = require("./controllers/battleController");
 const { endRound } = require("./phaseController");
 const axios = require("axios");
-const { telegramWebhookHandler } = require("./botStart");
+const { telegramWebhookHandler, sendInviteHandler } = require("./botStart");
 const { setTutorialFlag } = require("./controllers/tutorialController");
 
 const app = express();
@@ -159,59 +159,7 @@ app.get("/battle-challenge/:matchCode", (req, res) => {
   `);
 });
 
-app.post("/send-invite", async (req, res) => {
-  const { fromUser, toUsername, matchCode } = req.body;
-
-  try {
-    const usersRef = firestore.collection("users");
-    const snapshot = await usersRef.where("username", "==", toUsername).get();
-
-    if (snapshot.empty) {
-      // Friend hasn’t started the bot yet
-      return res.json({
-        success: false,
-        error: "Player not available. They must start the bot first.",
-      });
-    }
-
-    const userDoc = snapshot.docs[0];
-    const userData = userDoc.data();
-    const targetChatId = userData.userId;
-
-    if (!targetChatId) {
-      // Extra safety check
-      return res.json({
-        success: false,
-        error: "Player not available. They must start the bot first.",
-      });
-    }
-
-    // Send friendly battle message
-    await bot.sendMessage(
-      targetChatId,
-      `⚔️ ${fromUser} has invited you to a friendly battle!`,
-      {
-        reply_markup: {
-          inline_keyboard: [
-            [
-              {
-                text: "🎮 Start Game",
-                web_app: {
-                  url: `https://play.clashwarriors.tech/battleInvite/${matchCode}`,
-                },
-              },
-            ],
-          ],
-        },
-      }
-    );
-
-    return res.json({ success: true });
-  } catch (err) {
-    console.error("❌ Error sending friendly invite:", err);
-    return res.json({ success: false, error: err.message });
-  }
-});
+app.post("/send-invite", sendInviteHandler);
 
 app.post("/api/set-tutorial-flag", setTutorialFlag);
 
