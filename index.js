@@ -137,7 +137,7 @@ app.get("/battle-challenge/:matchCode", (req, res) => {
 
       <!-- Open Graph / Facebook -->
       <meta property="og:type" content="website">
-      <meta property="og:url" content="https://play.clashwarriors.tech/battleInvite/${matchCode}">
+      <meta property="og:url" content="https://share.clashwarriors.tech/battle-challenge/${matchCode}">
       <meta property="og:title" content="Join Clash Warriors Battle!">
       <meta property="og:description" content="Battle in real-time PvP with friends and earn $WARS tokens!">
       <meta property="og:image" content="https://adorable-fudge-c73118.netlify.app/assets/social/test.png">

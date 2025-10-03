@@ -220,7 +220,7 @@ async function handleFriendlyBattle(msg, match) {
               {
                 text: "🎮 Start Battle",
                 web_app: {
-                  url: `https://play.clashwarriors.tech/battleInvite/${matchCode}`,
+                  url: `https://play.clashwarriors.tech/battle-challenge/${matchCode}`,
                 },
               },
             ],
