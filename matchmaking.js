@@ -208,7 +208,7 @@ function startMatchmaking(db) {
           await Promise.all([
             FRIENDLY_QUEUE_REF.child(matchId).remove(),
             db.ref(`ongoingBattles/${matchId}`).set({
-              matchId,
+              matchId, // use the key from friendlyQueue directly
               currentPhase: "cooldown",
               winner: null,
               phaseStartTime: Date.now(),
