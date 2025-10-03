@@ -220,7 +220,7 @@ async function handleFriendlyBattle(msg, match) {
               {
                 text: "🎮 Start Battle",
                 web_app: {
-                  url: `https://play.clashwarriors.tech/battle-challenge/${matchCode}`,
+                  url: `https://play.clashwarriors.tech/tournament/${matchCode}`,
                 },
               },
             ],
@@ -262,7 +262,7 @@ async function sendInviteHandler(req, res) {
               {
                 text: "🎮 Start Game",
                 web_app: {
-                  url: `https://play.clashwarriors.tech/battleInvite/${matchCode}`,
+                  url: `https://play.clashwarriors.tech/tournament/${matchCode}`,
                 },
               },
             ],
