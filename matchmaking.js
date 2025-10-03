@@ -205,6 +205,23 @@ function startMatchmaking(db) {
 
         // Only proceed if both players exist
         if (match.player1 && match.player2) {
+          const player1Data = {
+            ...match.player1,
+            synergy: Number(match.player1.synergy),
+            initialSynergy: Number(match.player1.initialSynergy),
+            joinedAt: match.player1.joinedAt || Date.now(),
+            photoDP: match.player1.photoDP || "",
+          };
+
+          const player2Data = match.player2
+            ? {
+                ...match.player2,
+                synergy: Number(match.player2.synergy),
+                initialSynergy: Number(match.player2.initialSynergy),
+                joinedAt: match.player2.joinedAt || Date.now(),
+                photoDP: match.player2.photoDP || "",
+              }
+            : null;
           await Promise.all([
             FRIENDLY_QUEUE_REF.child(matchId).remove(),
             db.ref(`ongoingBattles/${matchId}`).set({
@@ -212,8 +229,8 @@ function startMatchmaking(db) {
               currentPhase: "cooldown",
               winner: null,
               phaseStartTime: Date.now(),
-              player1: match.player1,
-              player2: match.player2,
+              player1: player1Data,
+              player2: player2Data,
               startedAt: Date.now(),
               maxRounds: 4,
               round: 1,
