@@ -38,6 +38,7 @@ app.post("/join-matchmaking", async (req, res) => {
       userName,
       synergy,
       joinedAt: Date.now(),
+      photo_url,
     });
     console.log(`User joined matchmaking: ${userName}`);
     res.send({ success: true });

@@ -1,6 +1,7 @@
 const { startPhaseLoop } = require("./phaseController");
-const { startBotForMatch } = require("./controllers/botController"); // your bot script
+const { startBotForMatch } = require("./controllers/botController");
 const crypto = require("crypto");
+const names = require("./weights/names.json");
 
 const SYNERGY_TOLERANCE = 50;
 const BOT_THRESHOLD = 5000; // 5 seconds
@@ -14,9 +15,15 @@ function generateBotId() {
   return BOT_PREFIX + crypto.randomBytes(3).toString("hex");
 }
 
+function getRandomBotName() {
+  const idx = Math.floor(Math.random() * names.length);
+  return names[idx];
+}
+
 function startMatchmaking(db) {
   const queueRef = db.ref("matchmakingQueue");
   const tutorialQueueRef = db.ref("tutorialQueue"); // New tutorial queue
+  const FRIENDLY_QUEUE_REF = db.ref("friendlyQueue");
 
   let processing = false;
 
@@ -36,9 +43,9 @@ function startMatchmaking(db) {
           const botId = generateBotId();
           const botData = {
             userId: botId,
-            userName: user.userName,
+            userName: getRandomBotName(),
             synergy: user.synergy,
-            intitialSynergy: user.synergy,
+            initialSynergy: user.synergy,
             joinedAt: Date.now(),
           };
 
@@ -187,13 +194,70 @@ function startMatchmaking(db) {
     }
   }
 
+  // ---------------- Friendly Queue ----------------
+  async function processFriendlyQueue() {
+    try {
+      const snapshot = await FRIENDLY_QUEUE_REF.once("value");
+      const matches = snapshot.val() || {};
+
+      for (const matchId of Object.keys(matches)) {
+        const match = matches[matchId];
+
+        // Only proceed if both players exist
+        if (match.player1 && match.player2) {
+          await Promise.all([
+            FRIENDLY_QUEUE_REF.child(matchId).remove(),
+            db.ref(`ongoingBattles/${matchId}`).set({
+              matchId,
+              currentPhase: "cooldown",
+              winner: null,
+              phaseStartTime: Date.now(),
+              player1: match.player1,
+              player2: match.player2,
+              startedAt: Date.now(),
+              maxRounds: 4,
+              round: 1,
+              player1End: false,
+              player2End: false,
+              timersType: "normal",
+            }),
+          ]);
+
+          console.log(
+            `Friendly match started: ${match.player1.userName} vs ${match.player2.userName} | Match ID: ${matchId}`
+          );
+
+          startPhaseLoop(matchId);
+
+          // Start bot if any
+          if (
+            match.player1.userId.startsWith(BOT_PREFIX) ||
+            match.player2.userId.startsWith(BOT_PREFIX)
+          ) {
+            const botId = match.player1.userId.startsWith(BOT_PREFIX)
+              ? match.player1.userId
+              : match.player2.userId;
+            startBotForMatch(matchId, botId);
+            console.log(`Bot ${botId} started for Friendly Match ${matchId}`);
+          }
+        }
+      }
+    } catch (err) {
+      console.error("Friendly queue error:", err);
+    }
+  }
+
   // Trigger matchmaking on queue changes
   queueRef.on("child_added", () => processQueue());
   queueRef.on("child_removed", () => processQueue());
 
+  FRIENDLY_QUEUE_REF.on("child_added", () => processFriendlyQueue());
+  FRIENDLY_QUEUE_REF.on("child_removed", () => processFriendlyQueue());
+
   // Regularly check queue for humans waiting too long
   setInterval(addBotFallback, 2000);
   setInterval(processTutorialQueue, 1000);
+  setInterval(processFriendlyQueue, 1000);
 }
 
 module.exports = { startMatchmaking };
