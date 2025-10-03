@@ -2,7 +2,9 @@ require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 const { firestore, admin } = require("./firebase");
 
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || "8140480108:AAF0mLsV-QrcJKNfIxggRPOknRoNd6UwKOU";
+const TELEGRAM_BOT_TOKEN =
+  process.env.TELEGRAM_BOT_TOKEN ||
+  "8140480108:AAF0mLsV-QrcJKNfIxggRPOknRoNd6UwKOU";
 
 if (!TELEGRAM_BOT_TOKEN) {
   console.error("❌ TELEGRAM_BOT_TOKEN is missing!");
@@ -13,7 +15,8 @@ if (!TELEGRAM_BOT_TOKEN) {
 const bot = new TelegramBot(TELEGRAM_BOT_TOKEN, { polling: false });
 
 const miniAppUrl = "https://play.clashwarriors.tech/";
-const imageUrl = "https://adorable-fudge-c73118.netlify.app/assets/social/test.png";
+const imageUrl =
+  "https://adorable-fudge-c73118.netlify.app/assets/social/test.png";
 const description = `
 🎮 *Welcome to Clash Warriors!*
 
@@ -46,14 +49,19 @@ async function handleStartCommand(msg, match) {
   let referrerData = null;
 
   try {
-    // 1️⃣ Fetch referrer info if exists
+    // 1️⃣ Fetch referrer info if exists (read snake_case, fallback to camelCase)
     if (referrerId) {
-      const referrerDoc = await firestore.collection("users").doc(referrerId).get();
+      const referrerDoc = await firestore
+        .collection("users")
+        .doc(referrerId)
+        .get();
       if (referrerDoc.exists) {
+        const rd = referrerDoc.data();
         referrerData = {
           id: referrerId,
-          firstName: referrerDoc.data().firstName || "",
-          lastName: referrerDoc.data().lastName || "",
+          // prefer snake_case (first_name) but fall back to camelCase (firstName) if needed
+          first_name: (rd.first_name ?? rd.firstName ?? "").toString(),
+          last_name: (rd.last_name ?? rd.lastName ?? "").toString(),
         };
       }
     }
@@ -63,50 +71,74 @@ async function handleStartCommand(msg, match) {
     const userDoc = await userRef.get();
 
     if (!userDoc.exists) {
-      // Create new user with referredBy map
+      // Create new user with referredBy map (use snake_case fields)
       await userRef.set({
-        firstName: msg.from.first_name || "",
-        lastName: msg.from.last_name || "",
+        first_name: msg.from.first_name || "",
+        last_name: msg.from.last_name || "",
         referredBy: referrerData || null,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
         coins: 1000000,
       });
-    } else if (referrerData && !userDoc.data().referredBy) {
-      await userRef.update({ referredBy: referrerData });
+    } else {
+      // If doc exists and there's a referrer but user has no referredBy, update it
+      const currentRef = userDoc.data().referredBy;
+      if (referrerData && (!currentRef || !currentRef.id)) {
+        await userRef.update({ referredBy: referrerData });
+      }
+
+      // Also ensure user record itself uses snake_case for name fields (optional safe touch)
+      const updates = {};
+      if (!userDoc.data().first_name && userDoc.data().firstName)
+        updates.first_name = userDoc.data().firstName;
+      if (!userDoc.data().last_name && userDoc.data().lastName)
+        updates.last_name = userDoc.data().lastName;
+      if (Object.keys(updates).length) await userRef.update(updates);
     }
 
-    // 3️⃣ Handle referral logic
+    // 3️⃣ Handle referral logic (prevent self-referral)
     if (referrerData && referrerId !== newUserId) {
       const inviterRef = firestore.collection("users").doc(referrerId);
-      const friendDoc = await inviterRef.collection("friends").doc(newUserId).get();
+      const friendDoc = await inviterRef
+        .collection("friends")
+        .doc(newUserId)
+        .get();
 
       if (!friendDoc.exists) {
-        // Inviter's friends collection: add new user
-        await inviterRef.collection("friends").doc(newUserId).set({
-          id: newUserId,
-          firstName: msg.from.first_name || "",
-          lastName: msg.from.last_name || "",
-          invitedAt: admin.firestore.FieldValue.serverTimestamp(),
-        });
+        // Inviter's friends collection: add new user (snake_case)
+        await inviterRef
+          .collection("friends")
+          .doc(newUserId)
+          .set({
+            id: newUserId,
+            first_name: msg.from.first_name || "",
+            last_name: msg.from.last_name || "",
+            invitedAt: admin.firestore.FieldValue.serverTimestamp(),
+          });
 
-        // New user's friends collection: add inviter
+        // New user's friends collection: add inviter (snake_case)
         await userRef.collection("friends").doc(referrerId).set({
           id: referrerId,
-          firstName: referrerData.firstName,
-          lastName: referrerData.lastName,
+          first_name: referrerData.first_name,
+          last_name: referrerData.last_name,
           invitedAt: admin.firestore.FieldValue.serverTimestamp(),
         });
 
-        // 4️⃣ Grant referral coins
+        // 4️⃣ Grant referral coins (atomic)
         const batch = firestore.batch();
-        batch.update(userRef, { coins: admin.firestore.FieldValue.increment(1000000) });
-        batch.update(inviterRef, { coins: admin.firestore.FieldValue.increment(1000000) });
+        batch.update(userRef, {
+          coins: admin.firestore.FieldValue.increment(1000000),
+        });
+        batch.update(inviterRef, {
+          coins: admin.firestore.FieldValue.increment(1000000),
+        });
         await batch.commit();
 
-        // Notify inviter
+        // Notify inviter (uses msg.from.first_name as visible name)
         await bot.sendMessage(
           referrerId,
-          `🎉 You just invited ${msg.from.first_name}! Both of you received 1,000,000 coins.`
+          `🎉 You just invited ${
+            msg.from.first_name || referrerData.first_name
+          }! Both of you received 1,000,000 coins.`
         );
       }
     }
@@ -118,7 +150,12 @@ async function handleStartCommand(msg, match) {
       reply_markup: {
         inline_keyboard: [
           [{ text: "🎮 Start Game", web_app: { url: miniAppUrl } }],
-          [{ text: "📢 Join Announcement Channel", url: "https://t.me/clash_warriors_announcement" }],
+          [
+            {
+              text: "📢 Join Announcement Channel",
+              url: "https://t.me/clash_warriors_announcement",
+            },
+          ],
         ],
       },
     };
@@ -133,7 +170,12 @@ async function handleStartCommand(msg, match) {
       reply_markup: {
         inline_keyboard: [
           [{ text: "🎮 Start Game", web_app: { url: miniAppUrl } }],
-          [{ text: "📢 Join Announcement Channel", url: "https://t.me/clash_warriors_announcement" }],
+          [
+            {
+              text: "📢 Join Announcement Channel",
+              url: "https://t.me/clash_warriors_announcement",
+            },
+          ],
         ],
       },
     });
