@@ -123,6 +123,96 @@ app.get("/invite/:referrerId", (req, res) => {
   `);
 });
 
+app.get("/battle-challenge/:matchCode", (req, res) => {
+  const { matchCode } = req.params;
+
+  res.send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Join Clash Warriors Battle!</title>
+      <meta name="description" content="Join Clash Warriors and play a friendly battle with your friend!">
+
+      <!-- Open Graph / Facebook -->
+      <meta property="og:type" content="website">
+      <meta property="og:url" content="https://play.clashwarriors.tech/battleInvite/${matchCode}">
+      <meta property="og:title" content="Join Clash Warriors Battle!">
+      <meta property="og:description" content="Battle in real-time PvP with friends and earn $WARS tokens!">
+      <meta property="og:image" content="https://adorable-fudge-c73118.netlify.app/assets/social/test.png">
+
+      <!-- Twitter -->
+      <meta name="twitter:card" content="summary_large_image">
+      <meta name="twitter:title" content="Join Clash Warriors Battle!">
+      <meta name="twitter:description" content="Battle in real-time PvP with friends and earn $WARS tokens!">
+      <meta name="twitter:image" content="https://adorable-fudge-c73118.netlify.app/assets/social/test.png">
+    </head>
+    <body>
+      <script>
+        // Redirect to Telegram bot with friendly match payload
+        window.location.href = "https://t.me/clash_warriors_bot?start=friendly_${matchCode}";
+      </script>
+      <p>Redirecting to Telegram...</p>
+    </body>
+    </html>
+  `);
+});
+
+app.post("/send-invite", async (req, res) => {
+  const { fromUser, toUsername, matchCode } = req.body;
+
+  try {
+    const usersRef = firestore.collection("users");
+    const snapshot = await usersRef.where("username", "==", toUsername).get();
+
+    if (snapshot.empty) {
+      // Friend hasn’t started the bot yet
+      return res.json({
+        success: false,
+        error: "Player not available. They must start the bot first.",
+      });
+    }
+
+    const userDoc = snapshot.docs[0];
+    const userData = userDoc.data();
+    const targetChatId = userData.userId;
+
+    if (!targetChatId) {
+      // Extra safety check
+      return res.json({
+        success: false,
+        error: "Player not available. They must start the bot first.",
+      });
+    }
+
+    // Send friendly battle message
+    await bot.sendMessage(
+      targetChatId,
+      `⚔️ ${fromUser} has invited you to a friendly battle!`,
+      {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: "🎮 Start Game",
+                web_app: {
+                  url: `https://play.clashwarriors.tech/battleInvite/${matchCode}`,
+                },
+              },
+            ],
+          ],
+        },
+      }
+    );
+
+    return res.json({ success: true });
+  } catch (err) {
+    console.error("❌ Error sending friendly invite:", err);
+    return res.json({ success: false, error: err.message });
+  }
+});
+
 app.post("/api/set-tutorial-flag", setTutorialFlag);
 
 const PORT = process.env.PORT || 3000;

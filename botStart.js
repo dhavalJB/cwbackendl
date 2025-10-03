@@ -182,6 +182,61 @@ async function handleStartCommand(msg, match) {
   }
 }
 
+async function handleFriendlyBattle(msg, match) {
+  const chatId = msg.chat.id.toString();
+  const payload = match[1]; // this will be like 'friendly_ABC123'
+  const matchCode = payload.replace(/^friendly_/, "");
+
+  try {
+    // 1️⃣ Save friendly invite acceptance to Firestore
+    const friendlyRef = firestore.collection("friendlyQueue").doc(matchCode);
+    const doc = await friendlyRef.get();
+
+    if (!doc.exists) {
+      // First time accepting this match
+      await friendlyRef.set({
+        player2: chatId, // this user
+        acceptedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
+    } else {
+      // Update player2 if not already set
+      const data = doc.data();
+      if (!data.player2) {
+        await friendlyRef.update({
+          player2: chatId,
+          acceptedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+      }
+    }
+
+    // 2️⃣ Notify user
+    await bot.sendMessage(
+      chatId,
+      `⚔️ You joined friendly battle: ${matchCode}\nTap below to start playing!`,
+      {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: "🎮 Start Battle",
+                web_app: {
+                  url: `https://play.clashwarriors.tech/battleInvite/${matchCode}`,
+                },
+              },
+            ],
+          ],
+        },
+      }
+    );
+  } catch (err) {
+    console.error("❌ Friendly battle error:", err);
+    await bot.sendMessage(
+      chatId,
+      "❌ Could not join friendly battle. Try again later."
+    );
+  }
+}
+
 // Webhook handler for Express
 async function telegramWebhookHandler(req, res) {
   if (req.method !== "POST") return res.status(405).send("Method Not Allowed");
@@ -190,8 +245,19 @@ async function telegramWebhookHandler(req, res) {
     const update = req.body;
     if (update.message && update.message.text) {
       const match = update.message.text.match(/^\/start(?:\s(.*))?$/);
-      if (match) await handleStartCommand(update.message, match);
+      if (match) {
+        const payload = match[1];
+
+        if (payload?.startsWith("friendly_")) {
+          // Handle friendly battle
+          await handleFriendlyBattle(update.message, match);
+        } else {
+          // Normal /start flow (referrals, welcome)
+          await handleStartCommand(update.message, match);
+        }
+      }
     }
+
     await bot.processUpdate(update);
     res.status(200).send("OK");
   } catch (error) {
