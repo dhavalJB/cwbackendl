@@ -11,6 +11,8 @@ const { endRound } = require("./phaseController");
 const axios = require("axios");
 const { telegramWebhookHandler, sendInviteHandler } = require("./botStart");
 const { setTutorialFlag } = require("./controllers/tutorialController");
+const { cardsAdminRoutes } = require("./routes/cardsAdmin");
+const { userDataAdminRoutes } = require("./routes/userDataAdmin"); // new
 
 const app = express();
 
@@ -162,6 +164,10 @@ app.get("/battle-challenge/:matchCode", (req, res) => {
 app.post("/send-invite", sendInviteHandler);
 
 app.post("/api/set-tutorial-flag", setTutorialFlag);
+
+app.use("/api", cardsAdminRoutes);
+
+app.use("/api", userDataAdminRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

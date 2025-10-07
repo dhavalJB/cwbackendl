@@ -228,7 +228,7 @@ function startMatchmaking(db) {
               matchId, // use the key from friendlyQueue directly
               currentPhase: "cooldown",
               winner: null,
-              phaseStartTime: Date.now(), 
+              phaseStartTime: Date.now(),
               player1: player1Data,
               player2: player2Data,
               startedAt: Date.now(),

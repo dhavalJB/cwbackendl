@@ -1,0 +1,1910 @@
+[
+  {
+    "description": "A frozen sentinel, standing firm against the harshest storms.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/common/frostguard_common_1.avif",
+    "name": "Frostguard",
+    "price": 50000,
+    "stats": {
+      "agility": 5,
+      "armor": 8,
+      "attack": 9,
+      "intelligence": 7,
+      "powers": 8,
+      "vitality": 8
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "common",
+    "character": "frostguard",
+    "cardId": "-OLgvGE5Xyyk0VrIsXtw"
+  },
+  {
+    "description": "A frozen sentinel, standing firm against the harshest storms.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/common/frostguard_common_2.avif",
+    "name": "Frostguard",
+    "price": 50000,
+    "stats": {
+      "agility": 5,
+      "armor": 8,
+      "attack": 9,
+      "intelligence": 7,
+      "powers": 8,
+      "vitality": 8
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "common",
+    "character": "frostguard",
+    "cardId": "-OLgvGwmWvOzPy0uOYRW"
+  },
+  {
+    "description": "A frozen sentinel, standing firm against the harshest storms.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/common/frostguard_common_3.avif",
+    "name": "Frostguard",
+    "price": 50000,
+    "stats": {
+      "agility": 5,
+      "armor": 8,
+      "attack": 9,
+      "intelligence": 7,
+      "powers": 8,
+      "vitality": 8
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "common",
+    "character": "frostguard",
+    "cardId": "-OLgvHZsGJi_LsDLXkTT"
+  },
+  {
+    "description": "A frozen sentinel, standing firm against the harshest storms.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/common/frostguard_common_4.avif",
+    "name": "Frostguard",
+    "price": 50000,
+    "stats": {
+      "agility": 5,
+      "armor": 8,
+      "attack": 9,
+      "intelligence": 7,
+      "powers": 8,
+      "vitality": 8
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "common",
+    "character": "frostguard",
+    "cardId": "-OLgvHeFV9afQMZGZ-9o"
+  },
+  {
+    "description": "A frozen sentinel, standing firm against the harshest storms.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/common/frostguard_common_5.avif",
+    "name": "Frostguard",
+    "price": 50000,
+    "stats": {
+      "agility": 5,
+      "armor": 8,
+      "attack": 9,
+      "intelligence": 7,
+      "powers": 8,
+      "vitality": 8
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "common",
+    "character": "frostguard",
+    "cardId": "-OLgvIETBQ9cOkGDT1ZF"
+  },
+  {
+    "description": "A frozen sentinel, standing firm against the harshest storms.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/common/frostguard_common_6.avif",
+    "name": "Frostguard",
+    "price": 50000,
+    "stats": {
+      "agility": 5,
+      "armor": 8,
+      "attack": 9,
+      "intelligence": 7,
+      "powers": 8,
+      "vitality": 8
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "common",
+    "character": "frostguard",
+    "cardId": "-OLgvIpenxdY3wGDb7f1"
+  },
+  {
+    "description": "A whisper of the storm, still learning to command the skies.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/common/stormscaller_common_1.avif",
+    "name": "Stormscaller",
+    "price": 50000,
+    "stats": {
+      "agility": 9,
+      "armor": 5,
+      "attack": 10,
+      "intelligence": 7,
+      "powers": 10,
+      "vitality": 7
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "common",
+    "character": "stormscaller",
+    "cardId": "-OLgoGP6rvZ9NxWb8J7R"
+  },
+  {
+    "description": "A whisper of the storm, still learning to command the skies.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/common/stormscaller_common_2.avif",
+    "name": "Stormscaller",
+    "price": 50000,
+    "stats": {
+      "agility": 9,
+      "armor": 5,
+      "attack": 10,
+      "intelligence": 7,
+      "powers": 10,
+      "vitality": 7
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "common",
+    "character": "stormscaller",
+    "cardId": "-OLgoH1_Ee4Q-ktvrQxF"
+  },
+  {
+    "description": "A whisper of the storm, still learning to command the skies.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/common/stormscaller_common_3.avif",
+    "name": "Stormscaller",
+    "price": 50000,
+    "stats": {
+      "agility": 9,
+      "armor": 5,
+      "attack": 10,
+      "intelligence": 7,
+      "powers": 10,
+      "vitality": 7
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "common",
+    "character": "stormscaller",
+    "cardId": "-OLgoHlTj3W7EREpS4gV"
+  },
+  {
+    "description": "A whisper of the storm, still learning to command the skies.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/common/stormscaller_common_4.avif",
+    "name": "Stormscaller",
+    "price": 50000,
+    "stats": {
+      "agility": 9,
+      "armor": 5,
+      "attack": 10,
+      "intelligence": 7,
+      "powers": 10,
+      "vitality": 7
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "common",
+    "character": "stormscaller",
+    "cardId": "-OLgoIYZ0J_Bhin4ItAZ"
+  },
+  {
+    "description": "A flicker of celestial energy, still finding its true strength.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/common/starivya_common_1.avif",
+    "name": "Starivya",
+    "price": 50000,
+    "stats": {
+      "agility": 8,
+      "armor": 5,
+      "attack": 9,
+      "intelligence": 9,
+      "powers": 10,
+      "vitality": 7
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "common",
+    "character": "starivya",
+    "cardId": "-OLgqUUaPR39YqHKesWT"
+  },
+  {
+    "description": "A flicker of celestial energy, still finding its true strength.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/common/starivya_common_2.avif",
+    "name": "Starivya",
+    "price": 50000,
+    "stats": {
+      "agility": 8,
+      "armor": 5,
+      "attack": 9,
+      "intelligence": 9,
+      "powers": 10,
+      "vitality": 7
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "common",
+    "character": "starivya",
+    "cardId": "-OLgqV5SdScFUlF_L4Sr"
+  },
+  {
+    "description": "A flicker of celestial energy, still finding its true strength.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/common/starivya_common_3.avif",
+    "name": "Starivya",
+    "price": 50000,
+    "stats": {
+      "agility": 8,
+      "armor": 5,
+      "attack": 9,
+      "intelligence": 9,
+      "powers": 10,
+      "vitality": 7
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "common",
+    "character": "starivya",
+    "cardId": "-OLgqVqKKKc7iLdbAiXf"
+  },
+  {
+    "description": "A flicker of celestial energy, still finding its true strength.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/common/starivya_common_4.avif",
+    "name": "Starivya",
+    "price": 50000,
+    "stats": {
+      "agility": 8,
+      "armor": 5,
+      "attack": 9,
+      "intelligence": 9,
+      "powers": 10,
+      "vitality": 7
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "common",
+    "character": "starivya",
+    "cardId": "-OLgqWQMSW-OBtf9EISH"
+  },
+  {
+    "description": "A lurking shadow from the abyss, Xalgrith feeds on fear but remains weak in its form.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/common/xalgrith_com_1.avif",
+    "name": "Xalgrith the Void",
+    "price": 60000,
+    "stats": {
+      "agility": 10,
+      "armor": 6,
+      "attack": 12,
+      "intelligence": 8,
+      "powers": 12,
+      "vitality": 8
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "common",
+    "character": "xalgrith",
+    "cardId": "-OLgkbv6OTcB7N5M0N88"
+  },
+  {
+    "description": "A lurking shadow from the abyss, Xalgrith feeds on fear but remains weak in its form.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/common/xalgrith_com_2.avif",
+    "name": "Xalgrith the Void",
+    "price": 60000,
+    "stats": {
+      "agility": 10,
+      "armor": 6,
+      "attack": 12,
+      "intelligence": 8,
+      "powers": 12,
+      "vitality": 8
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "common",
+    "character": "xalgrith",
+    "cardId": "-OLgkcaaNDq0Cz-y6oCu"
+  },
+  {
+    "description": "A lurking shadow from the abyss, Xalgrith feeds on fear but remains weak in its form.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/common/xalgrith_com_3.avif",
+    "name": "Xalgrith the Void",
+    "price": 60000,
+    "stats": {
+      "agility": 10,
+      "armor": 6,
+      "attack": 12,
+      "intelligence": 8,
+      "powers": 12,
+      "vitality": 8
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "common",
+    "character": "xalgrith",
+    "cardId": "-OLgkdF2dWVYyaC8PGBO"
+  },
+  {
+    "description": "A lurking shadow from the abyss, Xalgrith feeds on fear but remains weak in its form.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/common/xalgrith_com_4.avif",
+    "name": "Xalgrith the Void",
+    "price": 60000,
+    "stats": {
+      "agility": 10,
+      "armor": 6,
+      "attack": 12,
+      "intelligence": 8,
+      "powers": 12,
+      "vitality": 8
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "common",
+    "character": "xalgrith",
+    "cardId": "-OLgkdL2reel_fDo7J52"
+  },
+  {
+    "description": "A steadfast guardian of the frozen lands, wielding the chill of winter.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/uncommon/frostguard_uncommon_1.avif",
+    "name": "Frostguard",
+    "price": 100000,
+    "stats": {
+      "agility": 7,
+      "armor": 12,
+      "attack": 9,
+      "intelligence": 9,
+      "powers": 12,
+      "vitality": 10
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "uncommon",
+    "character": "frostguard",
+    "cardId": "-OLguz9FC_IMKzzyiizt"
+  },
+  {
+    "description": "A steadfast guardian of the frozen lands, wielding the chill of winter.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/uncommon/frostguard_uncommon_2.avif",
+    "name": "Frostguard",
+    "price": 100000,
+    "stats": {
+      "agility": 7,
+      "armor": 12,
+      "attack": 9,
+      "intelligence": 9,
+      "powers": 12,
+      "vitality": 10
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "uncommon",
+    "character": "frostguard",
+    "cardId": "-OLguzrXYt8T8icc45en"
+  },
+  {
+    "description": "A steadfast guardian of the frozen lands, wielding the chill of winter.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/uncommon/frostguard_uncommon_3.avif",
+    "name": "Frostguard",
+    "price": 100000,
+    "stats": {
+      "agility": 7,
+      "armor": 12,
+      "attack": 9,
+      "intelligence": 9,
+      "powers": 12,
+      "vitality": 10
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "uncommon",
+    "character": "frostguard",
+    "cardId": "-OLgv-YlbU2hvixCpyE9"
+  },
+  {
+    "description": "A steadfast guardian of the frozen lands, wielding the chill of winter.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/uncommon/frostguard_uncommon_4.avif",
+    "name": "Frostguard",
+    "price": 100000,
+    "stats": {
+      "agility": 7,
+      "armor": 12,
+      "attack": 9,
+      "intelligence": 9,
+      "powers": 12,
+      "vitality": 10
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "uncommon",
+    "character": "frostguard",
+    "cardId": "-OLgv0G9fEgjK9gjuB5Q"
+  },
+  {
+    "description": "A steadfast guardian of the frozen lands, wielding the chill of winter.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/uncommon/frostguard_uncommon_5.avif",
+    "name": "Frostguard",
+    "price": 100000,
+    "stats": {
+      "agility": 7,
+      "armor": 12,
+      "attack": 9,
+      "intelligence": 9,
+      "powers": 12,
+      "vitality": 10
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "uncommon",
+    "character": "frostguard",
+    "cardId": "-OLgv0vw-ak_HSmdPyZ8"
+  },
+  {
+    "description": "Harnessing the fury of the storm, Stormscaller strikes with precision and power.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/uncommon/stormscaller_uncommon_1.avif",
+    "name": "Stormscaller",
+    "price": 100000,
+    "stats": {
+      "agility": 10,
+      "armor": 7,
+      "attack": 11,
+      "intelligence": 10,
+      "powers": 12,
+      "vitality": 9
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "uncommon",
+    "character": "stormscaller",
+    "cardId": "-OLgoWrCc9kDwEjxd2xd"
+  },
+  {
+    "description": "Harnessing the fury of the storm, Stormscaller strikes with precision and power.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/uncommon/stormscaller_uncommon_2.avif",
+    "name": "Stormscaller",
+    "price": 100000,
+    "stats": {
+      "agility": 10,
+      "armor": 7,
+      "attack": 11,
+      "intelligence": 10,
+      "powers": 12,
+      "vitality": 9
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "uncommon",
+    "character": "stormscaller",
+    "cardId": "-OLgoXQhRL9y0liyUTaX"
+  },
+  {
+    "description": "Harnessing the fury of the storm, Stormscaller strikes with precision and power.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/uncommon/stormscaller_uncommon_3.avif",
+    "name": "Stormscaller",
+    "price": 100000,
+    "stats": {
+      "agility": 10,
+      "armor": 7,
+      "attack": 11,
+      "intelligence": 10,
+      "powers": 12,
+      "vitality": 9
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "uncommon",
+    "character": "stormscaller",
+    "cardId": "-OLgoYCFdAcvdD61oDsy"
+  },
+  {
+    "description": "Harnessing the fury of the storm, Stormscaller strikes with precision and power.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/uncommon/stormscaller_uncommon_4.avif",
+    "name": "Stormscaller",
+    "price": 100000,
+    "stats": {
+      "agility": 10,
+      "armor": 7,
+      "attack": 11,
+      "intelligence": 10,
+      "powers": 12,
+      "vitality": 9
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "uncommon",
+    "character": "stormscaller",
+    "cardId": "-OLgoYmLs1eIWToVH4BX"
+  },
+  {
+    "description": "A celestial being harnessing the light, growing in strength and wisdom.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/uncommon/starivya_uncommon_1.avif",
+    "name": "Starivya",
+    "price": 100000,
+    "stats": {
+      "agility": 10,
+      "armor": 7,
+      "attack": 11,
+      "intelligence": 11,
+      "powers": 14,
+      "vitality": 9
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "uncommon",
+    "character": "starivya",
+    "cardId": "-OLgqfdflnzDW5Fw7GhT"
+  },
+  {
+    "description": "A celestial being harnessing the light, growing in strength and wisdom.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/uncommon/starivya_uncommon_2.avif",
+    "name": "Starivya",
+    "price": 100000,
+    "stats": {
+      "agility": 10,
+      "armor": 7,
+      "attack": 11,
+      "intelligence": 11,
+      "powers": 14,
+      "vitality": 9
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "uncommon",
+    "character": "starivya",
+    "cardId": "-OLgqgOAvqDpMK92qELj"
+  },
+  {
+    "description": "A celestial being harnessing the light, growing in strength and wisdom.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/uncommon/starivya_uncommon_3.avif",
+    "name": "Starivya",
+    "price": 100000,
+    "stats": {
+      "agility": 10,
+      "armor": 7,
+      "attack": 11,
+      "intelligence": 11,
+      "powers": 14,
+      "vitality": 9
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "uncommon",
+    "character": "starivya",
+    "cardId": "-OLgqhD2fv2Smu7rpbg3"
+  },
+  {
+    "description": "A celestial being harnessing the light, growing in strength and wisdom.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/uncommon/starivya_uncommon_4.avif",
+    "name": "Starivya",
+    "price": 100000,
+    "stats": {
+      "agility": 10,
+      "armor": 7,
+      "attack": 11,
+      "intelligence": 11,
+      "powers": 14,
+      "vitality": 9
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "uncommon",
+    "character": "starivya",
+    "cardId": "-OLgqhuSPXOl0Lmm6iU5"
+  },
+  {
+    "description": "A growing terror, Xalgrith begins to embrace its dark essence, striking fear into its foes.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/uncommon/xalgrith_uncom_1.avif",
+    "name": "Xalgrith the Void",
+    "price": 125000,
+    "stats": {
+      "agility": 14,
+      "armor": 12,
+      "attack": 18,
+      "intelligence": 12,
+      "powers": 16,
+      "vitality": 12
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "uncommon",
+    "character": "xalgrith",
+    "cardId": "-OLglRWx-dvzQblfumqz"
+  },
+  {
+    "description": "A growing terror, Xalgrith begins to embrace its dark essence, striking fear into its foes.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/uncommon/xalgrith_uncom_2.avif",
+    "name": "Xalgrith the Void",
+    "price": 125000,
+    "stats": {
+      "agility": 14,
+      "armor": 12,
+      "attack": 18,
+      "intelligence": 12,
+      "powers": 16,
+      "vitality": 12
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "uncommon",
+    "character": "xalgrith",
+    "cardId": "-OLglSIW1rmI6wOcigNO"
+  },
+  {
+    "description": "A growing terror, Xalgrith begins to embrace its dark essence, striking fear into its foes.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/uncommon/xalgrith_uncom_3.avif",
+    "name": "Xalgrith the Void",
+    "price": 125000,
+    "stats": {
+      "agility": 14,
+      "armor": 12,
+      "attack": 18,
+      "intelligence": 12,
+      "powers": 16,
+      "vitality": 12
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "uncommon",
+    "character": "xalgrith",
+    "cardId": "-OLglSvZcAayProgsh40"
+  },
+  {
+    "description": "A growing terror, Xalgrith begins to embrace its dark essence, striking fear into its foes.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/uncommon/xalgrith_uncom_4.avif",
+    "name": "Xalgrith the Void",
+    "price": 125000,
+    "stats": {
+      "agility": 14,
+      "armor": 12,
+      "attack": 18,
+      "intelligence": 12,
+      "powers": 16,
+      "vitality": 12
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "uncommon",
+    "character": "xalgrith",
+    "cardId": "-OLglSyDy-QzBVVaLd_p"
+  },
+  {
+    "description": "An unyielding warrior, encased in ancient ice, striking with freezing precision.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/frostguard_rare_1.avif",
+    "name": "Frostguard",
+    "price": 300000,
+    "stats": {
+      "agility": 9,
+      "armor": 12,
+      "attack": 12,
+      "intelligence": 11,
+      "powers": 14,
+      "vitality": 12
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "rare",
+    "character": "frostguard",
+    "cardId": "-OLgu80ohnapUQwOBIB6"
+  },
+  {
+    "description": "An unyielding warrior, encased in ancient ice, striking with freezing precision.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/frostguard_rare_2.avif",
+    "name": "Frostguard",
+    "price": 300000,
+    "stats": {
+      "agility": 9,
+      "armor": 12,
+      "attack": 12,
+      "intelligence": 11,
+      "powers": 14,
+      "vitality": 12
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "rare",
+    "character": "frostguard",
+    "cardId": "-OLgu8aYK1j_RKHldi_O"
+  },
+  {
+    "description": "An unyielding warrior, encased in ancient ice, striking with freezing precision.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/frostguard_rare_3.avif",
+    "name": "Frostguard",
+    "price": 300000,
+    "stats": {
+      "agility": 9,
+      "armor": 12,
+      "attack": 12,
+      "intelligence": 11,
+      "powers": 14,
+      "vitality": 12
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "rare",
+    "character": "frostguard",
+    "cardId": "-OLgu9KEcY6nETAz0wbZ"
+  },
+  {
+    "description": "An unyielding warrior, encased in ancient ice, striking with freezing precision.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/frostguard_rare_4.avif",
+    "name": "Frostguard",
+    "price": 300000,
+    "stats": {
+      "agility": 9,
+      "armor": 12,
+      "attack": 12,
+      "intelligence": 11,
+      "powers": 14,
+      "vitality": 12
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "rare",
+    "character": "frostguard",
+    "cardId": "-OLgu9vKFpa75CBvX0QA"
+  },
+  {
+    "description": "An unyielding warrior, encased in ancient ice, striking with freezing precision.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/frostguard_rare_5.avif",
+    "name": "Frostguard",
+    "price": 300000,
+    "stats": {
+      "agility": 9,
+      "armor": 12,
+      "attack": 12,
+      "intelligence": 11,
+      "powers": 14,
+      "vitality": 12
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "rare",
+    "character": "frostguard",
+    "cardId": "-OLguA_4iwJuVMxKkD8l"
+  },
+  {
+    "description": "An unyielding warrior, encased in ancient ice, striking with freezing precision.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/frostguard_rare_6.avif",
+    "name": "Frostguard",
+    "price": 300000,
+    "stats": {
+      "agility": 9,
+      "armor": 12,
+      "attack": 12,
+      "intelligence": 11,
+      "powers": 14,
+      "vitality": 12
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "rare",
+    "character": "frostguard",
+    "cardId": "-OLguBCldug7ltsMXQGy"
+  },
+  {
+    "description": "An unyielding warrior, encased in ancient ice, striking with freezing precision.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/frostguard_rare_7.avif",
+    "name": "Frostguard",
+    "price": 300000,
+    "stats": {
+      "agility": 9,
+      "armor": 12,
+      "attack": 12,
+      "intelligence": 11,
+      "powers": 14,
+      "vitality": 12
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "rare",
+    "character": "frostguard",
+    "cardId": "-OLguBoKgO6G5OOZvR4I"
+  },
+  {
+    "description": "An unyielding warrior, encased in ancient ice, striking with freezing precision.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/frostguard_rare_8.avif",
+    "name": "Frostguard",
+    "price": 300000,
+    "stats": {
+      "agility": 9,
+      "armor": 12,
+      "attack": 12,
+      "intelligence": 11,
+      "powers": 14,
+      "vitality": 12
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "rare",
+    "character": "frostguard",
+    "cardId": "-OLguCOijLhLiLXXh3I9"
+  },
+  {
+    "description": "An unyielding warrior, encased in ancient ice, striking with freezing precision.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/frostguard_rare_9.avif",
+    "name": "Frostguard",
+    "price": 300000,
+    "stats": {
+      "agility": 9,
+      "armor": 12,
+      "attack": 12,
+      "intelligence": 11,
+      "powers": 14,
+      "vitality": 12
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "rare",
+    "character": "frostguard",
+    "cardId": "-OLguCyfGuWXFDiYSVOg"
+  },
+  {
+    "description": "A master of the skies, Stormscaller controls the winds and lightning with ease.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/stormscaller_rare_1.avif",
+    "name": "Stormscaller",
+    "price": 300000,
+    "stats": {
+      "agility": 13,
+      "armor": 10,
+      "attack": 14,
+      "intelligence": 12,
+      "powers": 15,
+      "vitality": 11
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "rare",
+    "character": "stormscaller",
+    "cardId": "-OLgoobDYzZLGRBT8MS6"
+  },
+  {
+    "description": "A master of the skies, Stormscaller controls the winds and lightning with ease.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/stormscaller_rare_2.avif",
+    "name": "Stormscaller",
+    "price": 300000,
+    "stats": {
+      "agility": 13,
+      "armor": 10,
+      "attack": 14,
+      "intelligence": 12,
+      "powers": 15,
+      "vitality": 11
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "rare",
+    "character": "stormscaller",
+    "cardId": "-OLgopB3MPQCYyp1_sSE"
+  },
+  {
+    "description": "A master of the skies, Stormscaller controls the winds and lightning with ease.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/stormscaller_rare_3.avif",
+    "name": "Stormscaller",
+    "price": 300000,
+    "stats": {
+      "agility": 13,
+      "armor": 10,
+      "attack": 14,
+      "intelligence": 12,
+      "powers": 15,
+      "vitality": 11
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "rare",
+    "character": "stormscaller",
+    "cardId": "-OLgopltN6o5dWugOP2e"
+  },
+  {
+    "description": "A master of the skies, Stormscaller controls the winds and lightning with ease.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/stormscaller_rare_4.avif",
+    "name": "Stormscaller",
+    "price": 300000,
+    "stats": {
+      "agility": 13,
+      "armor": 10,
+      "attack": 14,
+      "intelligence": 12,
+      "powers": 15,
+      "vitality": 11
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "rare",
+    "character": "stormscaller",
+    "cardId": "-OLgoqNEgKWbp9m9QK9Y"
+  },
+  {
+    "description": "A master of the skies, Stormscaller controls the winds and lightning with ease.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/stormscaller_rare_5.avif",
+    "name": "Stormscaller",
+    "price": 300000,
+    "stats": {
+      "agility": 13,
+      "armor": 10,
+      "attack": 14,
+      "intelligence": 12,
+      "powers": 15,
+      "vitality": 11
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "rare",
+    "character": "stormscaller",
+    "cardId": "-OLgor2li-2TWlhrRmeV"
+  },
+  {
+    "description": "A radiant warrior, wielding cosmic energy to outshine its foes.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/starivya_premium_1.avif",
+    "name": "Starivya",
+    "price": 350000,
+    "stats": {
+      "agility": 12,
+      "armor": 10,
+      "attack": 14,
+      "intelligence": 13,
+      "powers": 18,
+      "vitality": 11
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "rare",
+    "character": "starivya",
+    "cardId": "-OLgsBsA8pTdDTzMD2wq"
+  },
+  {
+    "description": "A radiant warrior, wielding cosmic energy to outshine its foes.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/starivya_premium_2.avif",
+    "name": "Starivya",
+    "price": 350000,
+    "stats": {
+      "agility": 12,
+      "armor": 10,
+      "attack": 14,
+      "intelligence": 13,
+      "powers": 18,
+      "vitality": 11
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "rare",
+    "character": "starivya",
+    "cardId": "-OLgsC_RJiyV3F267sHa"
+  },
+  {
+    "description": "A radiant warrior, wielding cosmic energy to outshine its foes.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/starivya_premium_3.avif",
+    "name": "Starivya",
+    "price": 350000,
+    "stats": {
+      "agility": 12,
+      "armor": 10,
+      "attack": 14,
+      "intelligence": 13,
+      "powers": 18,
+      "vitality": 11
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "rare",
+    "character": "starivya",
+    "cardId": "-OLgsDAkYOmTyh9H9cMN"
+  },
+  {
+    "description": "A radiant warrior, wielding cosmic energy to outshine its foes.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/starivya_premium_4.avif",
+    "name": "Starivya",
+    "price": 350000,
+    "stats": {
+      "agility": 12,
+      "armor": 10,
+      "attack": 14,
+      "intelligence": 13,
+      "powers": 18,
+      "vitality": 11
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "rare",
+    "character": "starivya",
+    "cardId": "-OLgsE1p2g1YAUPRHhI5"
+  },
+  {
+    "description": "A radiant warrior, wielding cosmic energy to outshine its foes.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/starivya_premium_5.avif",
+    "name": "Starivya",
+    "price": 350000,
+    "stats": {
+      "agility": 12,
+      "armor": 10,
+      "attack": 14,
+      "intelligence": 13,
+      "powers": 18,
+      "vitality": 11
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "rare",
+    "character": "starivya",
+    "cardId": "-OLgsEeyLjlomk6W0slz"
+  },
+  {
+    "description": "A radiant warrior, wielding cosmic energy to outshine its foes.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/starivya_rare_1.avif",
+    "name": "Starivya",
+    "price": 350000,
+    "stats": {
+      "agility": 12,
+      "armor": 10,
+      "attack": 14,
+      "intelligence": 13,
+      "powers": 18,
+      "vitality": 11
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "rare",
+    "character": "starivya",
+    "cardId": "-OLgsFQA8bj_OoOB4UqG"
+  },
+  {
+    "description": "A nightmare given form, Xalgrith shifts through the darkness, consuming all who challenge it.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/xalgrith_rare_1.avif",
+    "name": "Xalgrith the Void",
+    "price": 350000,
+    "stats": {
+      "agility": 18,
+      "armor": 16,
+      "attack": 22,
+      "intelligence": 14,
+      "powers": 20,
+      "vitality": 14
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "rare",
+    "character": "xalgrith",
+    "cardId": "-OLgllXgoGPIr9x5bO41"
+  },
+  {
+    "description": "A nightmare given form, Xalgrith shifts through the darkness, consuming all who challenge it.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/xalgrith_rare_2.avif",
+    "name": "Xalgrith the Void",
+    "price": 350000,
+    "stats": {
+      "agility": 18,
+      "armor": 16,
+      "attack": 22,
+      "intelligence": 14,
+      "powers": 20,
+      "vitality": 14
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "rare",
+    "character": "xalgrith",
+    "cardId": "-OLglmGNAeHSxVGIrnZL"
+  },
+  {
+    "description": "A nightmare given form, Xalgrith shifts through the darkness, consuming all who challenge it.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/xalgrith_rare_3.avif",
+    "name": "Xalgrith the Void",
+    "price": 350000,
+    "stats": {
+      "agility": 18,
+      "armor": 16,
+      "attack": 22,
+      "intelligence": 14,
+      "powers": 20,
+      "vitality": 14
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "rare",
+    "character": "xalgrith",
+    "cardId": "-OLglmxZhtijSBh3BMaq"
+  },
+  {
+    "description": "A nightmare given form, Xalgrith shifts through the darkness, consuming all who challenge it.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/xalgrith_rare_4.avif",
+    "name": "Xalgrith the Void",
+    "price": 350000,
+    "stats": {
+      "agility": 18,
+      "armor": 16,
+      "attack": 22,
+      "intelligence": 14,
+      "powers": 20,
+      "vitality": 14
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "rare",
+    "character": "xalgrith",
+    "cardId": "-OLgln_mUXlLAZ5zpmL6"
+  },
+  {
+    "description": "A nightmare given form, Xalgrith shifts through the darkness, consuming all who challenge it.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/xalgrith_rare_5.avif",
+    "name": "Xalgrith the Void",
+    "price": 350000,
+    "stats": {
+      "agility": 18,
+      "armor": 16,
+      "attack": 22,
+      "intelligence": 14,
+      "powers": 20,
+      "vitality": 14
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "rare",
+    "character": "xalgrith",
+    "cardId": "-OLgloDeKtEnY7konRN3"
+  },
+  {
+    "description": "A nightmare given form, Xalgrith shifts through the darkness, consuming all who challenge it.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/xalgrith_rare_6.avif",
+    "name": "Xalgrith the Void",
+    "price": 350000,
+    "stats": {
+      "agility": 18,
+      "armor": 16,
+      "attack": 22,
+      "intelligence": 14,
+      "powers": 20,
+      "vitality": 14
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "rare",
+    "character": "xalgrith",
+    "cardId": "-OLglosE64O6uYm5CKz9"
+  },
+  {
+    "description": "A nightmare given form, Xalgrith shifts through the darkness, consuming all who challenge it.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/xalgrith_rare_7.avif",
+    "name": "Xalgrith the Void",
+    "price": 350000,
+    "stats": {
+      "agility": 18,
+      "armor": 16,
+      "attack": 22,
+      "intelligence": 14,
+      "powers": 20,
+      "vitality": 14
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "rare",
+    "character": "xalgrith",
+    "cardId": "-OLglpTXbgyrmV85vhAC"
+  },
+  {
+    "description": "A nightmare given form, Xalgrith shifts through the darkness, consuming all who challenge it.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/xalgrith_rare_8.avif",
+    "name": "Xalgrith the Void",
+    "price": 350000,
+    "stats": {
+      "agility": 18,
+      "armor": 16,
+      "attack": 22,
+      "intelligence": 14,
+      "powers": 20,
+      "vitality": 14
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "rare",
+    "character": "xalgrith",
+    "cardId": "-OLglq5BYnCvn_tXjZyz"
+  },
+  {
+    "description": "A nightmare given form, Xalgrith shifts through the darkness, consuming all who challenge it.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/rare/xalgrith_rare_9.avif",
+    "name": "Xalgrith the Void",
+    "price": 350000,
+    "stats": {
+      "agility": 18,
+      "armor": 16,
+      "attack": 22,
+      "intelligence": 14,
+      "powers": 20,
+      "vitality": 14
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "rare",
+    "character": "xalgrith",
+    "cardId": "-OLglqk0X_1lAfS48VUx"
+  },
+  {
+    "description": "A being of pure frost, its chilling presence freezes foes where they stand.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/frostguard_mythical_1.avif",
+    "name": "Frostguard",
+    "price": 600000,
+    "stats": {
+      "agility": 11,
+      "armor": 15,
+      "attack": 16,
+      "intelligence": 14,
+      "powers": 18,
+      "vitality": 14
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "mythical",
+    "character": "frostguard",
+    "cardId": "-OLgtpnuGdroa_x4VIMR"
+  },
+  {
+    "description": "A being of pure frost, its chilling presence freezes foes where they stand.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/frostguard_mythical_2.avif",
+    "name": "Frostguard",
+    "price": 600000,
+    "stats": {
+      "agility": 11,
+      "armor": 15,
+      "attack": 16,
+      "intelligence": 14,
+      "powers": 18,
+      "vitality": 14
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "mythical",
+    "character": "frostguard",
+    "cardId": "-OLgtqcPUmWej-v2V_9h"
+  },
+  {
+    "description": "A being of pure frost, its chilling presence freezes foes where they stand.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/frostguard_mythical_3.avif",
+    "name": "Frostguard",
+    "price": 600000,
+    "stats": {
+      "agility": 11,
+      "armor": 15,
+      "attack": 16,
+      "intelligence": 14,
+      "powers": 18,
+      "vitality": 14
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "mythical",
+    "character": "frostguard",
+    "cardId": "-OLgtrQ4hNTJ9TeQLNA6"
+  },
+  {
+    "description": "A being of pure frost, its chilling presence freezes foes where they stand.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/frostguard_mythical_4.avif",
+    "name": "Frostguard",
+    "price": 600000,
+    "stats": {
+      "agility": 11,
+      "armor": 15,
+      "attack": 16,
+      "intelligence": 14,
+      "powers": 18,
+      "vitality": 14
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "mythical",
+    "character": "frostguard",
+    "cardId": "-OLgts5nT7ka8KgGSYTd"
+  },
+  {
+    "description": "A being of pure frost, its chilling presence freezes foes where they stand.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/frostguard_mythical_5.avif",
+    "name": "Frostguard",
+    "price": 600000,
+    "stats": {
+      "agility": 11,
+      "armor": 15,
+      "attack": 16,
+      "intelligence": 14,
+      "powers": 18,
+      "vitality": 14
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "mythical",
+    "character": "frostguard",
+    "cardId": "-OLgtsjp9PSiBZFx1ZnD"
+  },
+  {
+    "description": "Commanding the full might of the storm, Stormscaller's wrath is both swift and devastating.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/stormscaller_mythical_1.avif",
+    "name": "Stormscaller",
+    "price": 620000,
+    "stats": {
+      "agility": 16,
+      "armor": 13,
+      "attack": 20,
+      "intelligence": 14,
+      "powers": 22,
+      "vitality": 13
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "mythical",
+    "character": "stormscaller",
+    "cardId": "-OLgp7yZxV5t1y8H3h4C"
+  },
+  {
+    "description": "Commanding the full might of the storm, Stormscaller's wrath is both swift and devastating.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/stormscaller_mythical_2.avif",
+    "name": "Stormscaller",
+    "price": 620000,
+    "stats": {
+      "agility": 16,
+      "armor": 13,
+      "attack": 20,
+      "intelligence": 14,
+      "powers": 22,
+      "vitality": 13
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "mythical",
+    "character": "stormscaller",
+    "cardId": "-OLgp8_PHYrcKhpkESG-"
+  },
+  {
+    "description": "Commanding the full might of the storm, Stormscaller's wrath is both swift and devastating.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/stormscaller_mythical_3.avif",
+    "name": "Stormscaller",
+    "price": 620000,
+    "stats": {
+      "agility": 16,
+      "armor": 13,
+      "attack": 20,
+      "intelligence": 14,
+      "powers": 22,
+      "vitality": 13
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "mythical",
+    "character": "stormscaller",
+    "cardId": "-OLgp99oeCwngf_0gl7A"
+  },
+  {
+    "description": "Commanding the full might of the storm, Stormscaller's wrath is both swift and devastating.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/stormscaller_mythical_4.avif",
+    "name": "Stormscaller",
+    "price": 620000,
+    "stats": {
+      "agility": 16,
+      "armor": 13,
+      "attack": 20,
+      "intelligence": 14,
+      "powers": 22,
+      "vitality": 13
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "mythical",
+    "character": "stormscaller",
+    "cardId": "-OLgp9otW2DlUynDw5wX"
+  },
+  {
+    "description": "Commanding the full might of the storm, Stormscaller's wrath is both swift and devastating.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/stormscaller_mythical_5.avif",
+    "name": "Stormscaller",
+    "price": 620000,
+    "stats": {
+      "agility": 16,
+      "armor": 13,
+      "attack": 20,
+      "intelligence": 14,
+      "powers": 22,
+      "vitality": 13
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "mythical",
+    "character": "stormscaller",
+    "cardId": "-OLgpARL94Rg_xkdiykV"
+  },
+  {
+    "description": "A cosmic force, radiating immense power that bends the very fabric of space.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/starivya_mythical_1.avif",
+    "name": "Starivya",
+    "price": 750000,
+    "stats": {
+      "agility": 15,
+      "armor": 13,
+      "attack": 18,
+      "intelligence": 16,
+      "powers": 22,
+      "vitality": 13
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "mythical",
+    "character": "starivya",
+    "cardId": "-OLgsSWnXd12TUHIAVwq"
+  },
+  {
+    "description": "A cosmic force, radiating immense power that bends the very fabric of space.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/starivya_mythical_2.avif",
+    "name": "Starivya",
+    "price": 750000,
+    "stats": {
+      "agility": 15,
+      "armor": 13,
+      "attack": 18,
+      "intelligence": 16,
+      "powers": 22,
+      "vitality": 13
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "mythical",
+    "character": "starivya",
+    "cardId": "-OLgsTHWJjzRAvl0BNB_"
+  },
+  {
+    "description": "A cosmic force, radiating immense power that bends the very fabric of space.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/starivya_mythical_3.avif",
+    "name": "Starivya",
+    "price": 750000,
+    "stats": {
+      "agility": 15,
+      "armor": 13,
+      "attack": 18,
+      "intelligence": 16,
+      "powers": 22,
+      "vitality": 13
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "mythical",
+    "character": "starivya",
+    "cardId": "-OLgsUTIRQyo0r9pvoly"
+  },
+  {
+    "description": "A cosmic force, radiating immense power that bends the very fabric of space.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/starivya_mythical_4.avif",
+    "name": "Starivya",
+    "price": 750000,
+    "stats": {
+      "agility": 15,
+      "armor": 13,
+      "attack": 18,
+      "intelligence": 16,
+      "powers": 22,
+      "vitality": 13
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "mythical",
+    "character": "starivya",
+    "cardId": "-OLgsV50sfoWQRnrn_H2"
+  },
+  {
+    "description": "A cosmic force, radiating immense power that bends the very fabric of space.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/starivya_mythical_5.avif",
+    "name": "Starivya",
+    "price": 750000,
+    "stats": {
+      "agility": 15,
+      "armor": 13,
+      "attack": 18,
+      "intelligence": 16,
+      "powers": 22,
+      "vitality": 13
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "mythical",
+    "character": "starivya",
+    "cardId": "-OLgsVmaTK2M5M94Bsnv"
+  },
+  {
+    "description": "A force beyond mortal comprehension, Xalgrith bends the abyss to its will, spreading eternal darkness.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/xalgrith_mythical_1.avif",
+    "name": "Xalgrith the Void",
+    "price": 750000,
+    "stats": {
+      "agility": 22,
+      "armor": 20,
+      "attack": 28,
+      "intelligence": 18,
+      "powers": 24,
+      "vitality": 16
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "mythical",
+    "character": "xalgrith",
+    "cardId": "-OLgmVA4V7orkBSh7rGe"
+  },
+  {
+    "description": "A force beyond mortal comprehension, Xalgrith bends the abyss to its will, spreading eternal darkness.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/xalgrith_mythical_2.avif",
+    "name": "Xalgrith the Void",
+    "price": 750000,
+    "stats": {
+      "agility": 22,
+      "armor": 20,
+      "attack": 28,
+      "intelligence": 18,
+      "powers": 24,
+      "vitality": 16
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "mythical",
+    "character": "xalgrith",
+    "cardId": "-OLgmW-EKCpfByT_kZZe"
+  },
+  {
+    "description": "A force beyond mortal comprehension, Xalgrith bends the abyss to its will, spreading eternal darkness.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/xalgrith_mythical_3.avif",
+    "name": "Xalgrith the Void",
+    "price": 750000,
+    "stats": {
+      "agility": 22,
+      "armor": 20,
+      "attack": 28,
+      "intelligence": 18,
+      "powers": 24,
+      "vitality": 16
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "mythical",
+    "character": "xalgrith",
+    "cardId": "-OLgmWbaQRK6X0-3dCI6"
+  },
+  {
+    "description": "A force beyond mortal comprehension, Xalgrith bends the abyss to its will, spreading eternal darkness.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/xalgrith_mythical_4.avif",
+    "name": "Xalgrith the Void",
+    "price": 750000,
+    "stats": {
+      "agility": 22,
+      "armor": 20,
+      "attack": 28,
+      "intelligence": 18,
+      "powers": 24,
+      "vitality": 16
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "mythical",
+    "character": "xalgrith",
+    "cardId": "-OLgmWf7NkqDGN1jfScx"
+  },
+  {
+    "description": "A force beyond mortal comprehension, Xalgrith bends the abyss to its will, spreading eternal darkness.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/xalgrith_mythical_5.avif",
+    "name": "Xalgrith the Void",
+    "price": 750000,
+    "stats": {
+      "agility": 22,
+      "armor": 20,
+      "attack": 28,
+      "intelligence": 18,
+      "powers": 24,
+      "vitality": 16
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "mythical",
+    "character": "xalgrith",
+    "cardId": "-OLgmXI7akklufONcFp2"
+  },
+  {
+    "description": "A force beyond mortal comprehension, Xalgrith bends the abyss to its will, spreading eternal darkness.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/mythical/xalgrith_mythical_6.avif",
+    "name": "Xalgrith the Void",
+    "price": 750000,
+    "stats": {
+      "agility": 22,
+      "armor": 20,
+      "attack": 28,
+      "intelligence": 18,
+      "powers": 24,
+      "vitality": 16
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "mythical",
+    "character": "xalgrith",
+    "cardId": "-OLgmY3MsyP595pZf21P"
+  },
+  {
+    "description": "An ancient guardian of ice, capable of summoning eternal winter with a single breath.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/frostguard_lege_1.avif",
+    "name": "Frostguard",
+    "price": 1500000,
+    "stats": {
+      "agility": 14,
+      "armor": 20,
+      "attack": 26,
+      "intelligence": 18,
+      "powers": 28,
+      "vitality": 18
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "legendary",
+    "character": "frostguard",
+    "cardId": "-OLgtZVWkp_bzroipYrq"
+  },
+  {
+    "description": "An ancient guardian of ice, capable of summoning eternal winter with a single breath.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/frostguard_lege_2.avif",
+    "name": "Frostguard",
+    "price": 1500000,
+    "stats": {
+      "agility": 14,
+      "armor": 20,
+      "attack": 26,
+      "intelligence": 18,
+      "powers": 28,
+      "vitality": 18
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "legendary",
+    "character": "frostguard",
+    "cardId": "-OLgt_DH4J2P-3jqLFsm"
+  },
+  {
+    "description": "An ancient guardian of ice, capable of summoning eternal winter with a single breath.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/frostguard_lege_3.avif",
+    "name": "Frostguard",
+    "price": 1500000,
+    "stats": {
+      "agility": 14,
+      "armor": 20,
+      "attack": 26,
+      "intelligence": 18,
+      "powers": 28,
+      "vitality": 18
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "legendary",
+    "character": "frostguard",
+    "cardId": "-OLgt_tWBBlLdAAaTHxO"
+  },
+  {
+    "description": "An ancient guardian of ice, capable of summoning eternal winter with a single breath.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/frostguard_lege_4.avif",
+    "name": "Frostguard",
+    "price": 1500000,
+    "stats": {
+      "agility": 14,
+      "armor": 20,
+      "attack": 26,
+      "intelligence": 18,
+      "powers": 28,
+      "vitality": 18
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "legendary",
+    "character": "frostguard",
+    "cardId": "-OLgtaU4B93hSVn3BrOV"
+  },
+  {
+    "description": "An ancient guardian of ice, capable of summoning eternal winter with a single breath.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/frostguard_lege_5.avif",
+    "name": "Frostguard",
+    "price": 1500000,
+    "stats": {
+      "agility": 14,
+      "armor": 20,
+      "attack": 26,
+      "intelligence": 18,
+      "powers": 28,
+      "vitality": 18
+    },
+    "tags": ["ice", "guardian", "cold", "shield", "frostguard"],
+    "rarity": "legendary",
+    "character": "frostguard",
+    "cardId": "-OLgtb5gWVO6dcTxzLiO"
+  },
+  {
+    "description": "An unstoppable tempest, Stormscaller becomes the storm itself, wielding untamed energy.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/stormscaller_legendary_1.avif",
+    "name": "Stormscaller",
+    "price": 180000,
+    "stats": {
+      "agility": 20,
+      "armor": 17,
+      "attack": 26,
+      "intelligence": 18,
+      "powers": 28,
+      "vitality": 16
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "legendary",
+    "character": "stormscaller",
+    "cardId": "-OLgp_gzGq3pEt4hb__5"
+  },
+  {
+    "description": "An unstoppable tempest, Stormscaller becomes the storm itself, wielding untamed energy.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/stormscaller_legendary_2.avif",
+    "name": "Stormscaller",
+    "price": 180000,
+    "stats": {
+      "agility": 20,
+      "armor": 17,
+      "attack": 26,
+      "intelligence": 18,
+      "powers": 28,
+      "vitality": 16
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "legendary",
+    "character": "stormscaller",
+    "cardId": "-OLgpaUYseee2mHvD6la"
+  },
+  {
+    "description": "An unstoppable tempest, Stormscaller becomes the storm itself, wielding untamed energy.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/stormscaller_legendary_3.avif",
+    "name": "Stormscaller",
+    "price": 180000,
+    "stats": {
+      "agility": 20,
+      "armor": 17,
+      "attack": 26,
+      "intelligence": 18,
+      "powers": 28,
+      "vitality": 16
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "legendary",
+    "character": "stormscaller",
+    "cardId": "-OLgpb1igX3wCPopom9E"
+  },
+  {
+    "description": "An unstoppable tempest, Stormscaller becomes the storm itself, wielding untamed energy.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/stormscaller_legendary_4.avif",
+    "name": "Stormscaller",
+    "price": 180000,
+    "stats": {
+      "agility": 20,
+      "armor": 17,
+      "attack": 26,
+      "intelligence": 18,
+      "powers": 28,
+      "vitality": 16
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "legendary",
+    "character": "stormscaller",
+    "cardId": "-OLgpbClkq9yuygACmHY"
+  },
+  {
+    "description": "An unstoppable tempest, Stormscaller becomes the storm itself, wielding untamed energy.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/stormscaller_legendary_5.avif",
+    "name": "Stormscaller",
+    "price": 180000,
+    "stats": {
+      "agility": 20,
+      "armor": 17,
+      "attack": 26,
+      "intelligence": 18,
+      "powers": 28,
+      "vitality": 16
+    },
+    "tags": ["storm", "lightning", "thunder", "wind", "stormscaller"],
+    "rarity": "legendary",
+    "character": "stormscaller",
+    "cardId": "-OLgpbowwncLhRRRpfyo"
+  },
+  {
+    "description": "An ancient celestial warrior, wielding boundless cosmic energy to reshape reality.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/starivya_lege_1.avif",
+    "name": "Starivya",
+    "price": 2000000,
+    "stats": {
+      "agility": 22,
+      "armor": 18,
+      "attack": 28,
+      "intelligence": 32,
+      "powers": 30,
+      "vitality": 25
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "legendary",
+    "character": "starivya",
+    "cardId": "-OLgszHYRFKkYZgII7le"
+  },
+  {
+    "description": "An ancient celestial warrior, wielding boundless cosmic energy to reshape reality.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/starivya_lege_2.avif",
+    "name": "Starivya",
+    "price": 2000000,
+    "stats": {
+      "agility": 22,
+      "armor": 18,
+      "attack": 28,
+      "intelligence": 32,
+      "powers": 30,
+      "vitality": 25
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "legendary",
+    "character": "starivya",
+    "cardId": "-OLgt-6Nkh-P5R46BDN-"
+  },
+  {
+    "description": "An ancient celestial warrior, wielding boundless cosmic energy to reshape reality.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/starivya_lege_3.avif",
+    "name": "Starivya",
+    "price": 2000000,
+    "stats": {
+      "agility": 22,
+      "armor": 18,
+      "attack": 28,
+      "intelligence": 32,
+      "powers": 30,
+      "vitality": 25
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "legendary",
+    "character": "starivya",
+    "cardId": "-OLgt-nNqfMx0PgYEngq"
+  },
+  {
+    "description": "An ancient celestial warrior, wielding boundless cosmic energy to reshape reality.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/starivya_lege_4.avif",
+    "name": "Starivya",
+    "price": 2000000,
+    "stats": {
+      "agility": 22,
+      "armor": 18,
+      "attack": 28,
+      "intelligence": 32,
+      "powers": 30,
+      "vitality": 25
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "legendary",
+    "character": "starivya",
+    "cardId": "-OLgt0WKZUYDX3eQ1jle"
+  },
+  {
+    "description": "An ancient celestial warrior, wielding boundless cosmic energy to reshape reality.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/starivya_lege_5.avif",
+    "name": "Starivya",
+    "price": 2000000,
+    "stats": {
+      "agility": 22,
+      "armor": 18,
+      "attack": 28,
+      "intelligence": 32,
+      "powers": 30,
+      "vitality": 25
+    },
+    "tags": ["celestial", "cosmic", "light", "energy", "starivya"],
+    "rarity": "legendary",
+    "character": "starivya",
+    "cardId": "-OLgt177AhgG3F13ISR3"
+  },
+  {
+    "description": "An eternal nightmare from the abyss, Xalgrith wields the darkness itself, bending reality to its will.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/xalgrith_legendary_1.avif",
+    "name": "Xalgrith the Void",
+    "price": 3000000,
+    "stats": {
+      "agility": 40,
+      "armor": 30,
+      "attack": 50,
+      "intelligence": 28,
+      "powers": 70,
+      "vitality": 25
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "legendary",
+    "character": "xalgrith",
+    "cardId": "-OLgn5W_gwPdB0dGuteT"
+  },
+  {
+    "description": "An eternal nightmare from the abyss, Xalgrith wields the darkness itself, bending reality to its will.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/xalgrith_legendary_2.avif",
+    "name": "Xalgrith the Void",
+    "price": 3000000,
+    "stats": {
+      "agility": 40,
+      "armor": 30,
+      "attack": 50,
+      "intelligence": 28,
+      "powers": 70,
+      "vitality": 25
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "legendary",
+    "character": "xalgrith",
+    "cardId": "-OLgn6FW8SnaHJ83uI6A"
+  },
+  {
+    "description": "An eternal nightmare from the abyss, Xalgrith wields the darkness itself, bending reality to its will.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/xalgrith_legendary_3.avif",
+    "name": "Xalgrith the Void",
+    "price": 3000000,
+    "stats": {
+      "agility": 40,
+      "armor": 30,
+      "attack": 50,
+      "intelligence": 28,
+      "powers": 70,
+      "vitality": 25
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "legendary",
+    "character": "xalgrith",
+    "cardId": "-OLgn70eZNGQEYF2jN1c"
+  },
+  {
+    "description": "An eternal nightmare from the abyss, Xalgrith wields the darkness itself, bending reality to its will.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/xalgrith_legendary_4.avif",
+    "name": "Xalgrith the Void",
+    "price": 3000000,
+    "stats": {
+      "agility": 40,
+      "armor": 30,
+      "attack": 50,
+      "intelligence": 28,
+      "powers": 70,
+      "vitality": 25
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "legendary",
+    "character": "xalgrith",
+    "cardId": "-OLgn7qcJddQ0VR71YY4"
+  },
+  {
+    "description": "An eternal nightmare from the abyss, Xalgrith wields the darkness itself, bending reality to its will.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/xalgrith_legendary_5.avif",
+    "name": "Xalgrith the Void",
+    "price": 3000000,
+    "stats": {
+      "agility": 40,
+      "armor": 30,
+      "attack": 50,
+      "intelligence": 28,
+      "powers": 70,
+      "vitality": 25
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "legendary",
+    "character": "xalgrith",
+    "cardId": "-OLgn8ZMFqMTSa1f2M14"
+  },
+  {
+    "description": "An eternal nightmare from the abyss, Xalgrith wields the darkness itself, bending reality to its will.",
+    "image": "https://adorable-fudge-c73118.netlify.app/cards/legendary/xalgrith_legendary_6.avif",
+    "name": "Xalgrith the Void",
+    "price": 3000000,
+    "stats": {
+      "agility": 40,
+      "armor": 30,
+      "attack": 50,
+      "intelligence": 28,
+      "powers": 70,
+      "vitality": 25
+    },
+    "tags": ["void", "shadow", "terror", "night", "dark", "xalgrith"],
+    "rarity": "legendary",
+    "character": "xalgrith",
+    "cardId": "-OLgn9AM82ByqoM9YY7w"
+  }
+]
