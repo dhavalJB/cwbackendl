@@ -25,6 +25,8 @@ const TUTORIAL_TIMERS = {
   finished: 10000,
 };
 
+const MAX_ROUNDS = 4;
+
 /**
  * PHASE_TIMERS object keeps the same name but returns correct timer
  * @param {string} phase
@@ -41,4 +43,4 @@ const PHASE_TIMERS = {
   },
 };
 
-module.exports = { PHASES, PHASE_TIMERS };
+module.exports = { PHASES, PHASE_TIMERS, MAX_ROUNDS };

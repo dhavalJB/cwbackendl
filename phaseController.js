@@ -1,6 +1,10 @@
 const { db } = require("./firebase");
 const { saveRoundData } = require("./controllers/battleController");
-const { PHASES, PHASE_TIMERS } = require("./weights/phaseConstants");
+const {
+  PHASES,
+  PHASE_TIMERS,
+  MAX_ROUNDS,
+} = require("./weights/phaseConstants");
 const executeBattlePhase = require("./battleLogics");
 
 const activeTimers = {};
@@ -77,6 +81,12 @@ async function startPhaseLoop(matchId, startIndex = 0, startRound = 0) {
   const matchRef = db.ref(`ongoingBattles/${matchId}`);
 
   async function nextPhase(currentIndex = startIndex, round = startRound) {
+    if (round >= MAX_ROUNDS) {
+      console.log(`[Match ${matchId}] -> Max rounds reached, finishing match.`);
+      await matchRef.update({ currentPhase: "finished" });
+      return;
+    }
+
     if (currentIndex >= PHASES.length) return;
 
     const snap = await matchRef.get();
