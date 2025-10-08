@@ -4,29 +4,96 @@ const router = express.Router();
 const { firestore } = require("../firebase");
 
 // ---------------------------
-// Fetch user cards
+// Helper: Merge cards by cardId, use lastUpdate if exists
+// ---------------------------
+const mergeCards = (localCards = [], backendCards = []) => {
+  const cardMap = {};
+
+  [...localCards, ...backendCards].forEach((card) => {
+    const existing = cardMap[card.cardId];
+    if (!existing) {
+      cardMap[card.cardId] = card;
+    } else {
+      // If card has lastUpdate, pick latest
+      if ((card.lastUpdate || 0) > (existing.lastUpdate || 0)) {
+        cardMap[card.cardId] = card;
+      }
+    }
+  });
+
+  return Object.values(cardMap);
+};
+
+// ---------------------------
+// GET /api/user/:userId
+// Fetch user data
+// ---------------------------
+router.get("/user/:userId", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const userDoc = await firestore.doc(`users/${userId}`).get();
+    if (!userDoc.exists) return res.status(404).json({ error: "User not found" });
+
+    res.json(userDoc.data());
+  } catch (err) {
+    console.error("Error fetching user data:", err);
+    res.status(500).json({ error: "Failed to fetch user data" });
+  }
+});
+
+// ---------------------------
+// POST /api/user/:userId
+// Upload / merge user data
+// ---------------------------
+router.post("/user/:userId", async (req, res) => {
+  const { userId } = req.params;
+  const { userData } = req.body;
+
+  if (!userData) return res.status(400).json({ error: "userData is required" });
+
+  try {
+    const userRef = firestore.doc(`users/${userId}`);
+    const userSnap = await userRef.get();
+    let finalUser = { ...userData, lastUpdate: Date.now() };
+
+    if (userSnap.exists) {
+      const backendUser = userSnap.data();
+      // Merge: keep latest coins/xp/stats based on lastUpdate
+      if ((backendUser.lastUpdate || 0) > (userData.lastUpdate || 0)) {
+        finalUser = backendUser;
+      } else {
+        finalUser.lastUpdate = Date.now();
+      }
+    }
+
+    await userRef.set(finalUser, { merge: true });
+    res.json({ success: true, message: "User data uploaded", data: finalUser });
+  } catch (err) {
+    console.error("Error uploading user data:", err);
+    res.status(500).json({ error: "Failed to upload user data" });
+  }
+});
+
+// ---------------------------
 // GET /api/user-cards/:userId
+// Fetch user cards
 // ---------------------------
 router.get("/user-cards/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
-    const cardsRef = firestore.collection(`users/${userId}/cards`);
-    const snapshot = await cardsRef.get();
+    const cardsSnap = await firestore.collection(`users/${userId}/cards`).get();
     const cards = [];
-    snapshot.forEach((doc) => {
-      cards.push({ cardId: doc.id, ...doc.data() });
-    });
+    cardsSnap.forEach((doc) => cards.push({ cardId: doc.id, ...doc.data() }));
     res.json(cards);
-  } catch (error) {
-    console.error("Error fetching user cards:", error);
+  } catch (err) {
+    console.error("Error fetching user cards:", err);
     res.status(500).json({ error: "Failed to fetch user cards" });
   }
 });
 
 // ---------------------------
-// Upload user cards
 // POST /api/user-cards/:userId
-// Body: { cards: [...] }
+// Upload / merge user cards
 // ---------------------------
 router.post("/user-cards/:userId", async (req, res) => {
   const { userId } = req.params;
@@ -38,91 +105,66 @@ router.post("/user-cards/:userId", async (req, res) => {
 
   try {
     const batch = firestore.batch();
-    cards.forEach((card) => {
+
+    for (const card of cards) {
       const cardRef = firestore.doc(`users/${userId}/cards/${card.cardId}`);
-      batch.set(cardRef, card);
-    });
+      const cardSnap = await cardRef.get();
+
+      if (!cardSnap.exists || (card.lastUpdate || 0) > (cardSnap.data().lastUpdate || 0)) {
+        batch.set(cardRef, { ...card, lastUpdate: Date.now() });
+      }
+    }
+
     await batch.commit();
     res.json({ success: true, message: "Cards uploaded successfully" });
-  } catch (error) {
-    console.error("Error uploading cards:", error);
-    res.status(500).json({ error: "Failed to upload cards" });
+  } catch (err) {
+    console.error("Error uploading user cards:", err);
+    res.status(500).json({ error: "Failed to upload user cards" });
   }
 });
 
 // ---------------------------
-// Fetch user data
-// GET /api/user/:userId
-// ---------------------------
-router.get("/user/:userId", async (req, res) => {
-  const { userId } = req.params;
-  try {
-    const userDoc = await firestore.doc(`users/${userId}`).get();
-    if (!userDoc.exists) {
-      return res.status(404).json({ error: "User not found" });
-    }
-    res.json(userDoc.data());
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-    res.status(500).json({ error: "Failed to fetch user data" });
-  }
-});
-
-// ---------------------------
-// Upload user data
-// POST /api/user/:userId
-// Body: { userData: {...} }
-// ---------------------------
-router.post("/user/:userId", async (req, res) => {
-  const { userId } = req.params;
-  const { userData } = req.body;
-
-  if (!userData) {
-    return res.status(400).json({ error: "userData is required" });
-  }
-
-  try {
-    const cleanData = { ...userData, lastUpdate: Date.now() };
-    await firestore.doc(`users/${userId}`).set(cleanData, { merge: true });
-    res.json({ success: true, message: "User data uploaded successfully" });
-  } catch (error) {
-    console.error("Error uploading user data:", error);
-    res.status(500).json({ error: "Failed to upload user data" });
-  }
-});
-
-// ---------------------------
-// Manual sync from frontend (IndexedDB)
 // POST /api/manual-sync/:userId
-// Body: { userData: {...} }
+// IndexedDB → Backend single-sync
 // ---------------------------
 router.post("/manual-sync/:userId", async (req, res) => {
   const { userId } = req.params;
-  const { userData } = req.body;
+  const { userData, cards } = req.body;
 
-  if (!userData) {
-    return res.status(400).json({ error: "userData is required" });
-  }
+  if (!userData) return res.status(400).json({ error: "userData is required" });
 
   try {
-    const cleanData = { ...userData, lastUpdate: Date.now() };
+    const userRef = firestore.doc(`users/${userId}`);
+    const userSnap = await userRef.get();
+    let finalUser = { ...userData, lastUpdate: Date.now() };
 
-    // Upload user main data
-    await firestore.doc(`users/${userId}`).set(cleanData, { merge: true });
+    if (userSnap.exists) {
+      const backendUser = userSnap.data();
+      if ((backendUser.lastUpdate || 0) > (userData.lastUpdate || 0)) {
+        finalUser = backendUser;
+      }
+    }
 
-    // Upload user cards if included
-    if (Array.isArray(userData.cards) && userData.cards.length > 0) {
+    await userRef.set(finalUser, { merge: true });
+
+    // Merge cards if included
+    if (cards && Array.isArray(cards) && cards.length > 0) {
+      const backendCardsSnap = await firestore.collection(`users/${userId}/cards`).get();
+      const backendCards = [];
+      backendCardsSnap.forEach((doc) => backendCards.push({ cardId: doc.id, ...doc.data() }));
+
+      const mergedCards = mergeCards(cards, backendCards);
       const batch = firestore.batch();
-      userData.cards.forEach((card) => {
+      mergedCards.forEach((card) => {
         const cardRef = firestore.doc(`users/${userId}/cards/${card.cardId}`);
-        batch.set(cardRef, card);
+        batch.set(cardRef, { ...card, lastUpdate: Date.now() });
       });
       await batch.commit();
     }
 
-    res.json({ success: true, message: "Manual sync completed" });
-  } catch (error) {
-    console.error("Error during manual sync:", error);
+    res.json({ success: true, message: "Manual sync completed", data: finalUser });
+  } catch (err) {
+    console.error("Error during manual sync:", err);
     res.status(500).json({ error: "Manual sync failed" });
   }
 });
