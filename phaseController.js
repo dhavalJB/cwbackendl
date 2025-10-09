@@ -44,10 +44,20 @@ async function endRound(matchId, playerId) {
   const matchData = snap.val();
   if (!matchData) throw new Error("Match not found");
 
+  // Prevent double endRound trigger
+  if (
+    (playerId === matchData.player1.userId && matchData.player1End) ||
+    (playerId === matchData.player2.userId && matchData.player2End)
+  ) {
+    console.log(
+      `[Match ${matchId}] -> Duplicate endRound ignored for ${playerId}`
+    );
+    return;
+  }
+
   const updateObj = {};
   if (matchData.player1.userId === playerId) updateObj.player1End = true;
   else if (matchData.player2.userId === playerId) updateObj.player2End = true;
-  else throw new Error("Invalid playerId");
 
   await matchRef.update(updateObj);
 
@@ -67,7 +77,7 @@ async function endRound(matchId, playerId) {
     }
     await startPhaseLoop(
       matchId,
-      updatedData.currentPhaseIndex + 1,
+      PHASES.indexOf("battle"),
       updatedData.currentRound
     );
   }
@@ -82,25 +92,24 @@ async function startPhaseLoop(matchId, startIndex = 0, startRound = 0) {
     const matchData = snap.val();
     if (!matchData || matchData.currentPhase === "cancelled") return;
 
-    // Max rounds check
-    if (round >= MAX_ROUNDS) {
+    const maxRounds = matchData.maxRounds || MAX_ROUNDS;
+
+    // Stop if rounds exceed max
+    if (round >= maxRounds) {
       console.log(`[Match ${matchId}] -> Max rounds reached, finishing match.`);
       await finishMatch(matchId);
       return;
     }
 
+    // If phaseIndex exceeds PHASES array, move to next round
     if (phaseIndex >= PHASES.length) {
-      // All phases done for this round, move to next round
       await nextPhase(0, round + 1);
       return;
     }
 
-    let phase = PHASES[phaseIndex];
-    let timer = PHASE_TIMERS.get(
-      phase,
-      round,
-      matchData.timersType || "normal"
-    );
+    let phase = PHASES[phaseIndex] || "finished"; // fallback
+    let timer =
+      PHASE_TIMERS.get(phase, round, matchData.timersType || "normal") || 5000;
 
     // Skip selection if both ended
     if (phase === "selection" && matchData.player1End && matchData.player2End) {
@@ -109,7 +118,7 @@ async function startPhaseLoop(matchId, startIndex = 0, startRound = 0) {
       await matchRef.update({ player1End: false, player2End: false });
     }
 
-    // Update Firebase with current phase info
+    // Update Firebase safely
     await matchRef.update({
       currentPhase: phase,
       currentPhaseIndex: phaseIndex,
@@ -121,7 +130,7 @@ async function startPhaseLoop(matchId, startIndex = 0, startRound = 0) {
       `[Match ${matchId}] -> Phase: ${phase} | Round: ${round} | PhaseIndex: ${phaseIndex}`
     );
 
-    // Role Assignment
+    // ---------------- Role Assignment ----------------
     if (phase === "cooldown" || phase === "selection") {
       const isFirstSelection = round === 0 && phaseIndex === 0;
       await roleAssigner(matchRef, round, isFirstSelection);
@@ -129,17 +138,14 @@ async function startPhaseLoop(matchId, startIndex = 0, startRound = 0) {
       if (!matchData.maxSynergy) {
         const { player1, player2 } = matchData;
         const maxSynergy = Math.max(
-          player1.initialSynergy || player1.synergy || 0,
-          player2.initialSynergy || player2.synergy || 0
+          player1.initialSynergy || 0,
+          player2.initialSynergy || 0
         );
         await matchRef.update({ maxSynergy });
-        console.log(
-          `[Match ${matchRef.key}] -> maxSynergy set to ${maxSynergy}`
-        );
       }
     }
 
-    // Battle Phase
+    // ---------------- Battle Phase ----------------
     if (phase === "battle") {
       console.log(`[Match ${matchId}] -> Battle started for Round ${round}`);
       await executeBattlePhase(matchId);
@@ -151,7 +157,6 @@ async function startPhaseLoop(matchId, startIndex = 0, startRound = 0) {
         await matchRef.update({ player1End: false, player2End: false });
         console.log(`[Match ${matchId}] -> Round ${round} saved`);
 
-        // Next phase in same round
         await nextPhase(phaseIndex + 1, round);
         delete activeTimers[matchId];
       }, timer);
@@ -159,13 +164,13 @@ async function startPhaseLoop(matchId, startIndex = 0, startRound = 0) {
       return;
     }
 
-    // Finished Phase
+    // ---------------- Finished Phase ----------------
     if (phase === "finished") {
       await finishMatch(matchId);
       return;
     }
 
-    // Schedule next phase for non-battle
+    // ---------------- Schedule next phase ----------------
     if (activeTimers[matchId]) clearTimeout(activeTimers[matchId]);
     activeTimers[matchId] = setTimeout(async () => {
       await nextPhase(phaseIndex + 1, round);
@@ -215,6 +220,7 @@ async function finishMatch(matchId) {
       matchData.currentRound || 0,
       matchData.timersType || "normal"
     ) || 5000;
+
   activeTimers[matchId] = setTimeout(async () => {
     await matchRef.remove();
     console.log(`[Match ${matchId}] -> Deleted from ongoingBattles`);
