@@ -75,7 +75,7 @@ function startMatchmaking(db) {
           userId: botId,
           userName: "Tutorial Bot",
           synergy: user.synergy,
-          intitialSynergy: user.synergy,
+          initialSynergy: user.synergy,
           joinedAt: Date.now(),
         };
 
@@ -98,6 +98,11 @@ function startMatchmaking(db) {
             timersType: "tutorial", // Important: tutorial timers
           }),
         ]);
+        db.ref(`ongoingBattlesIndex/${matchId}`).set({
+          player1: user,
+          player2: botData,
+          status: "waiting",
+        });
 
         console.log(
           `Tutorial user ${user.userName} assigned bot ${botId} | Match ID: ${matchId}`
@@ -158,6 +163,12 @@ function startMatchmaking(db) {
                   timersType: "normal",
                 }),
               ]);
+
+              db.ref(`ongoingBattlesIndex/${matchId}`).set({
+                player1: u1,
+                player2: u2,
+                status: "waiting",
+              });
 
               startPhaseLoop(matchId);
 
@@ -239,6 +250,12 @@ function startMatchmaking(db) {
               timersType: "normal",
             }),
           ]);
+
+          db.ref(`friendlyBattlesIndex/${matchId}`).set({
+            challenger: player1Data,
+            challenged: player2Data,
+            status: "pending",
+          });
 
           console.log(
             `Friendly match started: ${match.player1.userName} vs ${match.player2.userName} | Match ID: ${matchId}`
