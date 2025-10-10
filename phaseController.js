@@ -39,8 +39,8 @@ async function roleAssigner(matchRef, round, isFirstRound = false) {
   );
 }
 
-// ---------------- MAIN LOOP ----------------
-async function startPhaseLoop(matchId, startRound = 1, startPhaseIndex = 0) {
+// ---------------- START PHASE LOOP ----------------
+async function startPhaseLoop(matchId, startRound = 0, startPhaseIndex = 0) {
   const matchRef = db.ref(`ongoingBattles/${matchId}`);
 
   async function runPhase(round, phaseIndex) {
@@ -50,29 +50,26 @@ async function startPhaseLoop(matchId, startRound = 1, startPhaseIndex = 0) {
     if (matchData.currentPhase === "cancelled") return;
 
     const maxRounds = matchData.maxRounds || MAX_ROUNDS;
-    if (round > maxRounds) {
+    if (round > maxRounds - 1) {
       console.log(`[Match ${matchId}] → Max rounds reached. Finishing match.`);
       await finishMatch(matchId);
       return;
     }
 
-    // Get correct phase list for round
     const phases =
-      round === 1 ? PHASES_PER_ROUND.first : PHASES_PER_ROUND.normal;
+      round === 0 ? PHASES_PER_ROUND.first : PHASES_PER_ROUND.normal;
     const phase = phases[phaseIndex];
 
     if (!phase) {
-      // Round finished → next round
+      // Move to next round
       await runPhase(round + 1, 0);
       return;
     }
 
-    // Timer setup
-    let timer =
-      PHASE_TIMERS.get(phase, round - 1, matchData.timersType || "normal") ||
-      5000;
+    const timer =
+      PHASE_TIMERS.get(phase, round, matchData.timersType || "normal") || 5000;
 
-    // Skip selection if both ended
+    // Skip selection if both players ended
     if (phase === "selection" && matchData.player1End && matchData.player2End) {
       console.log(`[Match ${matchId}] → Skipping selection → Battle`);
       await matchRef.update({ player1End: false, player2End: false });
@@ -80,11 +77,22 @@ async function startPhaseLoop(matchId, startRound = 1, startPhaseIndex = 0) {
       return;
     }
 
-    // Update DB
+    // Clear currentRound only once at the start of selection
+    if (phase === "selection" && !matchData.selectionStarted) {
+      await matchRef.update({
+        currentRound: {},
+        selectionStarted: true, // lock so we don't clear again
+      });
+      console.log(
+        `[Match ${matchId}] → currentRound cleared as selection phase starts`
+      );
+    }
+
+    // Update phase info without overwriting currentRound during battle
     await matchRef.update({
       currentPhase: phase,
-      currentRound: round,
       currentPhaseIndex: phaseIndex,
+      numericRound: round,
       phaseStartTime: Date.now(),
     });
 
@@ -95,6 +103,7 @@ async function startPhaseLoop(matchId, startRound = 1, startPhaseIndex = 0) {
     // ---- Phase Behaviors ----
     if (phase === "cooldown" || phase === "selection") {
       await roleAssigner(matchRef, round, phase === "cooldown");
+
       if (!matchData.maxSynergy) {
         const { player1, player2 } = matchData;
         const maxSynergy = Math.max(
@@ -105,12 +114,25 @@ async function startPhaseLoop(matchId, startRound = 1, startPhaseIndex = 0) {
       }
     }
 
-    if (phase === "battle") {
-      console.log(`[Match ${matchId}] → Battle started (Round ${round})`);
-      await executeBattlePhase(matchId);
+    if (phase === "selection") {
+      // Clear previous round
+      await matchRef.update({ currentRound: {} });
+
+      // Players make selections here
+      console.log(`[Match ${matchId}] → Selection phase started`);
+
+      // Save round immediately after selections
       await saveRoundData(matchId, round);
+    }
+
+    if (phase === "battle") {
+      console.log(`[Match ${matchId}] → Battle phase started`);
+      await executeBattlePhase(matchId);
+
+      // Reset player end flags for next selection
       await matchRef.update({ player1End: false, player2End: false });
-      console.log(`[Match ${matchId}] → Round ${round} saved`);
+
+      console.log(`[Match ${matchId}] → Battle completed`);
     }
 
     // ---- Timer Handling ----
@@ -156,7 +178,9 @@ async function endRound(matchId, playerId) {
     console.log(`[Match ${matchId}] → Both players ended → skipping to battle`);
     if (activeTimers[matchId]) clearTimeout(activeTimers[matchId]);
     delete activeTimers[matchId];
-    await startPhaseLoop(matchId, updated.currentRound, 1); // jump directly to battle
+
+    // Jump directly to battle, selectionStarted will remain true until battle completes
+    await startPhaseLoop(matchId, updated.numericRound, 1);
   }
 }
 
@@ -189,7 +213,7 @@ async function finishMatch(matchId) {
   console.log(`[Match ${matchId}] ✅ Finished | Winner: ${winnerId || "Draw"}`);
 
   const cleanupDelay =
-    PHASE_TIMERS.get("finished", matchData.currentRound || 0) || 5000;
+    PHASE_TIMERS.get("finished", matchData.numericRound || 0) || 3000;
 
   activeTimers[matchId] = setTimeout(async () => {
     await matchRef.remove();

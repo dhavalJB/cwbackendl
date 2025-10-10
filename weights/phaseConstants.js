@@ -15,14 +15,14 @@ const BASE_TIMERS = {
   cooldown: 5000,
   selection: 10000,
   battle: 5000,
-  finished: 5000,
+  finished: 3000,
 };
 
 const TUTORIAL_TIMERS = {
   cooldown: 16000,
   selection: 22000,
   battle: 3000,
-  finished: 10000,
+  finished: 3000,
 };
 
 const MAX_ROUNDS = 4;

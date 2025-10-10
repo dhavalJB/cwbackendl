@@ -98,11 +98,29 @@ function startMatchmaking(db) {
             timersType: "tutorial", // Important: tutorial timers
           }),
         ]);
-        db.ref(`ongoingBattlesIndex/${matchId}`).set({
-          player1: user,
-          player2: botData,
+        // Set ongoingBattlesIndex
+        const indexRef = db.ref(`ongoingBattlesIndex/${matchId}`);
+        await indexRef.set({
+          player1: u1,
+          player2: u2,
           status: "waiting",
         });
+
+        // Remove after 5 seconds
+        setTimeout(() => {
+          (async () => {
+            await indexRef.remove();
+            console.log(
+              `ongoingBattlesIndex/${matchId} removed after 5 seconds`
+            );
+          })();
+        }, 5000);
+
+        // Remove after 5 seconds
+        setTimeout(async () => {
+          await indexRef.remove();
+          console.log(`ongoingBattlesIndex/${matchId} removed after 5 seconds`);
+        }, 5000);
 
         console.log(
           `Tutorial user ${user.userName} assigned bot ${botId} | Match ID: ${matchId}`
@@ -164,11 +182,23 @@ function startMatchmaking(db) {
                 }),
               ]);
 
-              db.ref(`ongoingBattlesIndex/${matchId}`).set({
+              // Set ongoingBattlesIndex
+              const indexRef = db.ref(`ongoingBattlesIndex/${matchId}`);
+              await indexRef.set({
                 player1: u1,
                 player2: u2,
                 status: "waiting",
               });
+
+              // Remove after 5 seconds
+              setTimeout(() => {
+                (async () => {
+                  await indexRef.remove();
+                  console.log(
+                    `ongoingBattlesIndex/${matchId} removed after 5 seconds`
+                  );
+                })();
+              }, 5000);
 
               startPhaseLoop(matchId);
 
@@ -251,12 +281,23 @@ function startMatchmaking(db) {
             }),
           ]);
 
-          db.ref(`friendlyBattlesIndex/${matchId}`).set({
-            challenger: player1Data,
-            challenged: player2Data,
-            status: "pending",
+          // Set ongoingBattlesIndex
+          const indexRef = db.ref(`friendlyBattlesIndex/${matchId}`);
+          await indexRef.set({
+            player1: u1,
+            player2: u2,
+            status: "waiting",
           });
 
+          // Remove after 5 seconds
+          setTimeout(() => {
+            (async () => {
+              await indexRef.remove();
+              console.log(
+                `friendlyBattlesIndex/${matchId} removed after 5 seconds`
+              );
+            })();
+          }, 5000);
           console.log(
             `Friendly match started: ${match.player1.userName} vs ${match.player2.userName} | Match ID: ${matchId}`
           );
