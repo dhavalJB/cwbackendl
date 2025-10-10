@@ -3,8 +3,9 @@ const { startBotForMatch } = require("./controllers/botController");
 const crypto = require("crypto");
 const names = require("./weights/names.json");
 
+// ---------------- CONSTANTS ----------------
 const SYNERGY_TOLERANCE = 50;
-const BOT_THRESHOLD = 5000; // 5 seconds
+const BOT_THRESHOLD = 5000;
 const BOT_PREFIX = "AIBOTPLAYER_";
 
 function generateMatchId() {
@@ -20,14 +21,19 @@ function getRandomBotName() {
   return names[idx];
 }
 
-function startMatchmaking(db) {
+/**
+ * Start matchmaking system
+ * @param {*} db - Firebase Realtime DB
+ * @param {*} emitMatchFound - function(userId, matchData) from Socket.IO
+ */
+function startMatchmaking(db, emitMatchFound) {
   const queueRef = db.ref("matchmakingQueue");
-  const tutorialQueueRef = db.ref("tutorialQueue"); // New tutorial queue
+  const tutorialQueueRef = db.ref("tutorialQueue");
   const FRIENDLY_QUEUE_REF = db.ref("friendlyQueue");
 
   let processing = false;
 
-  // Add bot to queue if a human has been waiting too long
+  // ---------------- BOT FALLBACK ----------------
   async function addBotFallback() {
     try {
       const snapshot = await queueRef.once("value");
@@ -35,7 +41,6 @@ function startMatchmaking(db) {
 
       for (const userId of Object.keys(users)) {
         const user = users[userId];
-
         if (user.userId.startsWith(BOT_PREFIX)) continue;
 
         const waitingTime = Date.now() - (user.joinedAt || Date.now());
@@ -48,9 +53,8 @@ function startMatchmaking(db) {
             initialSynergy: user.synergy,
             joinedAt: Date.now(),
           };
-
           await queueRef.child(botId).set(botData);
-          console.log(`Added bot ${botData.userId} for ${user.userName}`);
+          console.log(`🤖 Added bot ${botData.userId} for ${user.userName}`);
         }
       }
     } catch (err) {
@@ -58,7 +62,7 @@ function startMatchmaking(db) {
     }
   }
 
-  // ---------------- Tutorial Queue Processing ----------------
+  // ---------------- TUTORIAL QUEUE ----------------
   async function processTutorialQueue() {
     try {
       const snapshot = await tutorialQueueRef.once("value");
@@ -66,10 +70,8 @@ function startMatchmaking(db) {
 
       for (const userId of Object.keys(tutorialUsers)) {
         const user = tutorialUsers[userId];
-
         if (!user) continue;
 
-        // Immediately assign a bot
         const botId = generateBotId();
         const botData = {
           userId: botId,
@@ -80,72 +82,55 @@ function startMatchmaking(db) {
         };
 
         const matchId = generateMatchId();
+        const matchData = {
+          matchId,
+          currentPhase: "cooldown",
+          winner: null,
+          phaseStartTime: Date.now(),
+          player1: user,
+          player2: botData,
+          startedAt: Date.now(),
+          maxRounds: 1,
+          round: 1,
+          player1End: false,
+          player2End: false,
+          timersType: "tutorial",
+        };
 
         await Promise.all([
           tutorialQueueRef.child(userId).remove(),
-          db.ref(`ongoingBattles/${matchId}`).set({
-            matchId,
-            currentPhase: "cooldown",
-            winner: null,
-            phaseStartTime: Date.now(),
-            player1: user,
-            player2: botData,
-            startedAt: Date.now(),
-            maxRounds: 1, // tutorial can have 1 round
-            round: 1,
-            player1End: false,
-            player2End: false,
-            timersType: "tutorial", // Important: tutorial timers
-          }),
+          db.ref(`ongoingBattles/${matchId}`).set(matchData),
         ]);
-        // Set ongoingBattlesIndex
-        const indexRef = db.ref(`ongoingBattlesIndex/${matchId}`);
-        await indexRef.set({
-          player1: u1,
-          player2: u2,
-          status: "waiting",
-        });
 
-        // Remove after 5 seconds
-        setTimeout(() => {
-          (async () => {
-            await indexRef.remove();
-            console.log(
-              `ongoingBattlesIndex/${matchId} removed after 5 seconds`
-            );
-          })();
-        }, 5000);
-
-        // Remove after 5 seconds
-        setTimeout(async () => {
-          await indexRef.remove();
-          console.log(`ongoingBattlesIndex/${matchId} removed after 5 seconds`);
-        }, 5000);
-
-        console.log(
-          `Tutorial user ${user.userName} assigned bot ${botId} | Match ID: ${matchId}`
-        );
         startPhaseLoop(matchId);
         startBotForMatch(matchId, botId);
+
+        // ✅ Socket.IO emit
+        if (emitMatchFound) emitMatchFound(userId, matchData);
+
+        console.log(
+          `🎓 Tutorial user ${user.userName} matched with bot ${botId} | Match ID: ${matchId}`
+        );
       }
     } catch (err) {
       console.error("Tutorial queue error:", err);
     }
   }
 
+  // ---------------- MAIN MATCHMAKING ----------------
   async function processQueue() {
     if (processing) return;
     processing = true;
 
     try {
-      const snapshot = await queueRef.once("value");
-      let users = snapshot.val() || {};
+      let users = (await queueRef.once("value")).val() || {};
       let userIds = Object.keys(users);
-      let matchedThisBatch = new Set();
-      let foundMatch = false;
+      const matchedThisBatch = new Set();
 
+      let foundMatch;
       do {
         foundMatch = false;
+
         for (let i = 0; i < userIds.length; i++) {
           const u1Id = userIds[i];
           const u1 = users[u1Id];
@@ -156,57 +141,42 @@ function startMatchmaking(db) {
             const u2 = users[u2Id];
             if (!u2 || matchedThisBatch.has(u2Id)) continue;
 
-            const synergyDiff = Math.abs(u1.synergy - u2.synergy);
-            if (synergyDiff <= SYNERGY_TOLERANCE) {
+            // ✅ Matching logic
+            if (Math.abs(u1.synergy - u2.synergy) <= SYNERGY_TOLERANCE) {
               matchedThisBatch.add(u1Id);
               matchedThisBatch.add(u2Id);
 
               const matchId = generateMatchId();
+              const matchData = {
+                matchId,
+                currentPhase: "cooldown",
+                winner: null,
+                phaseStartTime: Date.now(),
+                player1: u1,
+                player2: u2,
+                startedAt: Date.now(),
+                maxRounds: 4,
+                round: 1,
+                player1End: false,
+                player2End: false,
+                timersType: "normal",
+              };
 
               await Promise.all([
                 queueRef.child(u1Id).remove(),
                 queueRef.child(u2Id).remove(),
-                db.ref(`ongoingBattles/${matchId}`).set({
-                  matchId,
-                  currentPhase: "cooldown",
-                  winner: null,
-                  phaseStartTime: Date.now(),
-                  player1: u1,
-                  player2: u2,
-                  startedAt: Date.now(),
-                  maxRounds: 4,
-                  round: 1,
-                  player1End: false,
-                  player2End: false,
-                  timersType: "normal",
-                }),
+                db.ref(`ongoingBattles/${matchId}`).set(matchData),
               ]);
-
-              // Set ongoingBattlesIndex
-              const indexRef = db.ref(`ongoingBattlesIndex/${matchId}`);
-              await indexRef.set({
-                player1: u1,
-                player2: u2,
-                status: "waiting",
-              });
-
-              // Remove after 5 seconds
-              setTimeout(() => {
-                (async () => {
-                  await indexRef.remove();
-                  console.log(
-                    `ongoingBattlesIndex/${matchId} removed after 5 seconds`
-                  );
-                })();
-              }, 5000);
 
               startPhaseLoop(matchId);
 
-              console.log(
-                `Matched ${u1.userName} with ${u2.userName} | Match ID: ${matchId}`
-              );
+              // ✅ Emit to both users via Socket.IO
+              if (emitMatchFound) {
+                emitMatchFound(u1Id, matchData);
+                emitMatchFound(u2Id, matchData);
+              }
 
-              // ✅ Trigger bot if present
+              // ✅ Bot start
               if (
                 u1.userId.startsWith(BOT_PREFIX) ||
                 u2.userId.startsWith(BOT_PREFIX)
@@ -215,10 +185,13 @@ function startMatchmaking(db) {
                   ? u1.userId
                   : u2.userId;
                 startBotForMatch(matchId, botId);
-                console.log(`Bot ${botId} started for Match ${matchId}`);
               }
 
-              // Refresh snapshot
+              console.log(
+                `🔥 Matched ${u1.userName} vs ${u2.userName} | Match ID: ${matchId}`
+              );
+
+              // Refresh data
               users = (await queueRef.once("value")).val() || {};
               userIds = Object.keys(users);
               foundMatch = true;
@@ -235,7 +208,7 @@ function startMatchmaking(db) {
     }
   }
 
-  // ---------------- Friendly Queue ----------------
+  // ---------------- FRIENDLY MATCHES ----------------
   async function processFriendlyQueue() {
     try {
       const snapshot = await FRIENDLY_QUEUE_REF.once("value");
@@ -243,93 +216,65 @@ function startMatchmaking(db) {
 
       for (const matchId of Object.keys(matches)) {
         const match = matches[matchId];
+        if (!match.player1 || !match.player2) continue;
 
-        // Only proceed if both players exist
-        if (match.player1 && match.player2) {
-          const player1Data = {
-            ...match.player1,
-            synergy: Number(match.player1.synergy),
-            initialSynergy: Number(match.player1.initialSynergy),
-            joinedAt: match.player1.joinedAt || Date.now(),
-            photoDP: match.player1.photoDP || "",
-          };
+        const player1Data = { ...match.player1 };
+        const player2Data = { ...match.player2 };
 
-          const player2Data = match.player2
-            ? {
-                ...match.player2,
-                synergy: Number(match.player2.synergy),
-                initialSynergy: Number(match.player2.initialSynergy),
-                joinedAt: match.player2.joinedAt || Date.now(),
-                photoDP: match.player2.photoDP || "",
-              }
-            : null;
-          await Promise.all([
-            FRIENDLY_QUEUE_REF.child(matchId).remove(),
-            db.ref(`ongoingBattles/${matchId}`).set({
-              matchId, // use the key from friendlyQueue directly
-              currentPhase: "cooldown",
-              winner: null,
-              phaseStartTime: Date.now(),
-              player1: player1Data,
-              player2: player2Data,
-              startedAt: Date.now(),
-              maxRounds: 4,
-              round: 1,
-              player1End: false,
-              player2End: false,
-              timersType: "normal",
-            }),
-          ]);
+        const matchData = {
+          matchId,
+          currentPhase: "cooldown",
+          winner: null,
+          phaseStartTime: Date.now(),
+          player1: player1Data,
+          player2: player2Data,
+          startedAt: Date.now(),
+          maxRounds: 4,
+          round: 1,
+          player1End: false,
+          player2End: false,
+          timersType: "normal",
+        };
 
-          // Set ongoingBattlesIndex
-          const indexRef = db.ref(`friendlyBattlesIndex/${matchId}`);
-          await indexRef.set({
-            player1: u1,
-            player2: u2,
-            status: "waiting",
-          });
+        await Promise.all([
+          FRIENDLY_QUEUE_REF.child(matchId).remove(),
+          db.ref(`ongoingBattles/${matchId}`).set(matchData),
+        ]);
 
-          // Remove after 5 seconds
-          setTimeout(() => {
-            (async () => {
-              await indexRef.remove();
-              console.log(
-                `friendlyBattlesIndex/${matchId} removed after 5 seconds`
-              );
-            })();
-          }, 5000);
-          console.log(
-            `Friendly match started: ${match.player1.userName} vs ${match.player2.userName} | Match ID: ${matchId}`
-          );
+        startPhaseLoop(matchId);
 
-          startPhaseLoop(matchId);
-
-          // Start bot if any
-          if (
-            match.player1.userId.startsWith(BOT_PREFIX) ||
-            match.player2.userId.startsWith(BOT_PREFIX)
-          ) {
-            const botId = match.player1.userId.startsWith(BOT_PREFIX)
-              ? match.player1.userId
-              : match.player2.userId;
-            startBotForMatch(matchId, botId);
-            console.log(`Bot ${botId} started for Friendly Match ${matchId}`);
-          }
+        // ✅ Emit to both users via Socket.IO
+        if (emitMatchFound) {
+          emitMatchFound(player1Data.userId, matchData);
+          emitMatchFound(player2Data.userId, matchData);
         }
+
+        if (
+          player1Data.userId.startsWith(BOT_PREFIX) ||
+          player2Data.userId.startsWith(BOT_PREFIX)
+        ) {
+          const botId = player1Data.userId.startsWith(BOT_PREFIX)
+            ? player1Data.userId
+            : player2Data.userId;
+          startBotForMatch(matchId, botId);
+        }
+
+        console.log(
+          `⚔️ Friendly match: ${player1Data.userName} vs ${player2Data.userName} | Match ID: ${matchId}`
+        );
       }
     } catch (err) {
       console.error("Friendly queue error:", err);
     }
   }
 
-  // Trigger matchmaking on queue changes
+  // ---------------- EVENT TRIGGERS ----------------
   queueRef.on("child_added", () => processQueue());
   queueRef.on("child_removed", () => processQueue());
 
   FRIENDLY_QUEUE_REF.on("child_added", () => processFriendlyQueue());
   FRIENDLY_QUEUE_REF.on("child_removed", () => processFriendlyQueue());
 
-  // Regularly check queue for humans waiting too long
   setInterval(addBotFallback, 2000);
   setInterval(processTutorialQueue, 1000);
   setInterval(processFriendlyQueue, 1000);

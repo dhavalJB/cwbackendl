@@ -1,9 +1,5 @@
-require("dotenv").config(); // Load environment variables
 const express = require("express");
 const cors = require("cors");
-const http = require("http");
-const { Server } = require("socket.io");
-const rateLimit = require("express-rate-limit");
 const { db, firestore } = require("./firebase");
 const { startMatchmaking } = require("./matchmaking");
 const {
@@ -16,83 +12,29 @@ const axios = require("axios");
 const { telegramWebhookHandler, sendInviteHandler } = require("./botStart");
 const { setTutorialFlag } = require("./controllers/tutorialController");
 const { cardsAdminRoutes } = require("./routes/cardsAdmin");
-const { userDataAdminRoutes } = require("./routes/userDataAdmin");
+const { userDataAdminRoutes } = require("./routes/userDataAdmin"); // new
 
-// -------------------- APP SETUP --------------------
 const app = express();
 
-// Security & CORS
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",")
-  : ["*"];
-app.use(
-  cors({
-    origin: "*", // Allow any origin
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true, // optional, if you need cookies/auth
-  })
-);
-
+// ✅ Allow all origins
+app.use(cors());
 app.use(express.json());
 
-// Rate Limiting
-const apiLimiter = rateLimit({
-  windowMs: 10 * 1000, // 10 sec
-  max: 50, // max 50 requests per window per IP
-  message: "Too many requests, try again later.",
-});
-app.use("/api/", apiLimiter);
-
-// -------------------- SOCKET.IO SETUP --------------------
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: "*", // Allow any origin
-    methods: ["GET", "POST"],
-    credentials: true, // optional if using cookies or auth
-  },
+app.get("/", (req, res) => {
+  res.send("⚔️ Clash Warriors backend is alive 🚀");
 });
 
-const connectedUsers = {}; // Map userId => socketId
+// Start matchmaking interval
+startMatchmaking(db, 500); // check every 500ms
 
-io.on("connection", (socket) => {
-  console.log("Socket connected:", socket.id);
+// Endpoint to join queue
+app.post("/join-matchmaking", async (req, res) => {
+  const { userId, userName, synergy } = req.body;
+  if (!userId || !userName || synergy === undefined) {
+    return res.status(400).send({ error: "Missing user data" });
+  }
 
-  socket.on("register", (userId) => {
-    connectedUsers[userId] = socket.id;
-    socket.userId = userId; // attach userId to socket for reconnect tracking
-    console.log(`User registered: ${userId}`);
-  });
-
-  socket.on("reconnect_attempt", () => {
-    console.log(`Socket ${socket.id} attempting to reconnect...`);
-  });
-
-  socket.on("disconnect", (reason) => {
-    if (socket.userId && connectedUsers[socket.userId] === socket.id) {
-      delete connectedUsers[socket.userId];
-      console.log(`User disconnected: ${socket.userId} | Reason: ${reason}`);
-    }
-  });
-});
-
-// Emit helper for matchmaking
-const emitMatchFound = (userId, matchData) => {
-  const socketId = connectedUsers[userId];
-  if (socketId) io.to(socketId).emit("match-found", matchData);
-};
-
-// -------------------- EXPRESS ROUTES --------------------
-app.get("/", (req, res) => res.send("⚔️ Clash Warriors backend is alive 🚀"));
-
-// Matchmaking endpoint
-app.post("/join-matchmaking", async (req, res, next) => {
   try {
-    const { userId, userName, synergy, photo_url } = req.body;
-    if (!userId || !userName || synergy === undefined) {
-      return res.status(400).json({ error: "Missing user data" });
-    }
-
     await db.ref(`matchmakingQueue/${userId}`).set({
       userId,
       userName,
@@ -100,46 +42,51 @@ app.post("/join-matchmaking", async (req, res, next) => {
       joinedAt: Date.now(),
       photo_url,
     });
-
     console.log(`User joined matchmaking: ${userName}`);
-    res.json({ success: true });
+    res.send({ success: true });
   } catch (err) {
-    next(err);
+    console.error("Error joining matchmaking:", err);
+    res.status(500).send({ error: "Could not join queue" });
   }
 });
 
 // Battle routes
 app.post("/api/battle/:matchId/select-card", selectCard);
 app.post("/api/battle/:matchId/select-ability", selectAbility);
-app.post("/api/battle/:matchId/endTurn", async (req, res, next) => {
+app.post("/api/battle/:matchId/endTurn", async (req, res) => {
+  const { matchId } = req.params;
+  const { playerId } = req.body;
+
   try {
-    const { matchId } = req.params;
-    const { playerId } = req.body;
     await endRound(matchId, playerId);
     res.json({ success: true });
   } catch (err) {
-    next(err);
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
   }
 });
 
-app.post("/api/battle/:matchId/cancelMatch", async (req, res, next) => {
+// Cancel match route
+app.post("/api/battle/:matchId/cancelMatch", async (req, res) => {
+  const { matchId } = req.params;
+  const { playerId } = req.body;
+
+  if (!matchId || !playerId) {
+    return res.status(400).json({ error: "matchId and playerId required" });
+  }
+
   try {
-    const { matchId } = req.params;
-    const { playerId } = req.body;
-    if (!matchId || !playerId)
-      return res.status(400).json({ error: "matchId and playerId required" });
-
     await endBattle(matchId, playerId);
-    res.json({ message: "Match cancelled, loser announced" });
+    return res
+      .status(200)
+      .json({ message: "Match cancelled, loser announced" });
   } catch (err) {
-    next(err);
+    console.error("Error cancelling match:", err);
+    return res.status(500).json({ error: "Failed to cancel match" });
   }
 });
 
-// Telegram & invite routes
 app.post("/telegram-bot", telegramWebhookHandler);
-app.post("/send-invite", sendInviteHandler);
-app.post("/api/set-tutorial-flag", setTutorialFlag);
 
 app.get("/invite/:referrerId", (req, res) => {
   const { referrerId } = req.params;
@@ -214,26 +161,20 @@ app.get("/battle-challenge/:matchCode", (req, res) => {
   `);
 });
 
-// Admin routes
+app.post("/send-invite", sendInviteHandler);
+
+app.post("/api/set-tutorial-flag", setTutorialFlag);
+
 app.use("/api", cardsAdminRoutes);
+
 app.use("/api", userDataAdminRoutes);
 
-// -------------------- START MATCHMAKING --------------------
-startMatchmaking(db, emitMatchFound);
-
-// -------------------- ERROR HANDLER --------------------
-app.use((err, req, res, next) => {
-  console.error("Server Error:", err);
-  res.status(500).json({ error: err.message || "Internal Server Error" });
-});
-
-// -------------------- SERVER LISTEN --------------------
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-// Keep-alive ping for Render
 if (process.env.RENDER_EXTERNAL_URL) {
   const SELF_URL = process.env.RENDER_EXTERNAL_URL;
+
   setInterval(async () => {
     try {
       await axios.get(SELF_URL);
@@ -241,14 +182,5 @@ if (process.env.RENDER_EXTERNAL_URL) {
     } catch (err) {
       console.error("❌ Keep-alive ping failed:", err.message);
     }
-  }, 40 * 1000);
+  }, 40 * 1000); // ping every 40s
 }
-
-// Graceful shutdown
-process.on("SIGINT", () => {
-  console.log("Shutting down gracefully...");
-  server.close(() => process.exit(0));
-});
-
-// Export io and emit helper
-module.exports = { io, emitMatchFound, connectedUsers };
