@@ -221,52 +221,30 @@ app.use("/api", userDataAdminRoutes);
 
 // -------------------- Leaderboard Routes --------------------
 
+let cachedTop100 = [];
+let cacheTime = 0;
+const CACHE_DURATION = 15 * 1000; // 15 sec
+
 app.get("/api/global-top100", async (req, res) => {
   try {
+    if (Date.now() - cacheTime < CACHE_DURATION) {
+      return res.json(cachedTop100);
+    }
+
     const { rows } = await pool.query(
-      `SELECT user_id, first_name, last_name, photo_url, elo
+      `SELECT user_id, first_name_ascii AS first_name, last_name_ascii AS last_name, photo_url, elo
        FROM leaderboard
        ORDER BY elo DESC
        LIMIT 100`
     );
-    res.json(rows); // Returns only top 100 players
+
+    cachedTop100 = rows;
+    cacheTime = Date.now();
+
+    res.json(rows);
   } catch (err) {
     console.error("❌ Error fetching leaderboard:", err);
     res.status(500).json({ error: "Failed to fetch leaderboard" });
-  }
-});
-
-app.post("/api/sync-leaderboard", async (req, res) => {
-  const { users } = req.body;
-  if (!users || !users.length)
-    return res.status(400).json({ error: "No users provided" });
-
-  try {
-    for (const user of users) {
-      const { userId, first_name, last_name, photo_url, elo } = user;
-
-      await pool.query(
-        `INSERT INTO leaderboard (user_id, first_name, last_name, photo_url, elo)
-   VALUES ($1, $2, $3, $4, $5)
-   ON CONFLICT (user_id) DO UPDATE
-   SET first_name = EXCLUDED.first_name,
-       last_name = EXCLUDED.last_name,
-       photo_url = EXCLUDED.photo_url,
-       elo = EXCLUDED.elo`,
-        [
-          userId,
-          (first_name || "").substring(0, 50),
-          (last_name || "").substring(0, 50),
-          photo_url || "",
-          elo || 1000,
-        ]
-      );
-    }
-
-    res.json({ success: true, count: users.length });
-  } catch (err) {
-    console.error("❌ Error inserting leaderboard into PG:", err);
-    res.status(500).json({ error: "Failed to sync leaderboard" });
   }
 });
 
