@@ -232,10 +232,10 @@ app.get("/api/global-top100", async (req, res) => {
     }
 
     const { rows } = await pool.query(
-      `SELECT user_id, first_name_ascii AS first_name, last_name_ascii AS last_name, photo_url, elo
-       FROM leaderboard
-       ORDER BY elo DESC
-       LIMIT 100`
+      `SELECT user_id, first_name, last_name, photo_url, elo
+   FROM leaderboard
+   ORDER BY elo DESC
+   LIMIT 100`
     );
 
     cachedTop100 = rows;
