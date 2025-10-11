@@ -2,6 +2,8 @@ const { db } = require("./firebase");
 const { saveRoundData } = require("./controllers/battleController");
 const { PHASE_TIMERS, MAX_ROUNDS } = require("./weights/phaseConstants");
 const executeBattlePhase = require("./battleLogics");
+const axios = require("axios");
+const pool = require("./db");
 
 const activeTimers = {}; // single timer per match
 
@@ -10,6 +12,16 @@ const PHASES_PER_ROUND = {
   first: ["cooldown", "selection", "battle"],
   normal: ["selection", "battle"],
 };
+
+function calculateElo(winnerElo, loserElo, k = 32) {
+  const expectedWinner = 1 / (1 + 10 ** ((loserElo - winnerElo) / 400));
+  const expectedLoser = 1 / (1 + 10 ** ((winnerElo - loserElo) / 400));
+
+  const newWinnerElo = Math.round(winnerElo + k * (1 - expectedWinner));
+  const newLoserElo = Math.round(loserElo + k * (0 - expectedLoser));
+
+  return { newWinnerElo, newLoserElo };
+}
 
 // ---------------- ROLE ASSIGNER ----------------
 async function roleAssigner(matchRef, round, isFirstRound = false) {
@@ -209,9 +221,64 @@ async function finishMatch(matchId) {
   }
 
   await matchRef.update({ currentPhase: "finished", winnerId, loserId });
-
   console.log(`[Match ${matchId}] ✅ Finished | Winner: ${winnerId || "Draw"}`);
 
+  let winnerElo = null;
+  let loserElo = null;
+
+  // ---- Fetch ELO only for human players ----
+  try {
+    if (winnerId && !winnerId.startsWith("AIBOTPLAYER")) {
+      const { rows } = await pool.query(
+        "SELECT elo FROM leaderboard WHERE user_id = $1",
+        [winnerId]
+      );
+      winnerElo = rows[0]?.elo || 1200;
+    }
+
+    if (loserId && !loserId.startsWith("AIBOTPLAYER")) {
+      const { rows } = await pool.query(
+        "SELECT elo FROM leaderboard WHERE user_id = $1",
+        [loserId]
+      );
+      loserElo = rows[0]?.elo || 1200;
+    }
+  } catch (err) {
+    console.error("Failed to fetch ELO from SQL:", err);
+  }
+
+  // ---- Calculate new ELO if at least one human player ----
+  if (winnerElo !== null || loserElo !== null) {
+    const { newWinnerElo, newLoserElo } = calculateElo(
+      winnerElo || 1200,
+      loserElo || 1200
+    );
+
+    // ---- Update ELO in SQL for human players only ----
+    try {
+      if (winnerElo !== null) {
+        await pool.query(
+          "UPDATE leaderboard SET elo = $1 WHERE user_id = $2",
+          [newWinnerElo, winnerId]
+        );
+      }
+
+      if (loserElo !== null) {
+        await pool.query(
+          "UPDATE leaderboard SET elo = $1 WHERE user_id = $2",
+          [newLoserElo, loserId]
+        );
+      }
+
+      console.log(
+        `[Match ${matchId}] 🔹 Updated ELO | Winner: ${newWinnerElo || "-"}, Loser: ${newLoserElo || "-"}`
+      );
+    } catch (err) {
+      console.error("Failed to update ELO in SQL:", err);
+    }
+  }
+
+  // ---- Cleanup ----
   const cleanupDelay =
     PHASE_TIMERS.get("finished", matchData.numericRound || 0) || 3000;
 
@@ -221,5 +288,6 @@ async function finishMatch(matchId) {
     console.log(`[Match ${matchId}] 🔥 Deleted from ongoingBattles`);
   }, cleanupDelay);
 }
+
 
 module.exports = { startPhaseLoop, endRound };

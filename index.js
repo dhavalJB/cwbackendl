@@ -22,24 +22,26 @@ const pool = require("./db");
 // -------------------- APP SETUP --------------------
 const app = express();
 
+// Trust proxy for correct IP detection behind Render or Nginx
+app.set("trust proxy", 1);
+app.use(express.json());
+
 // Security & CORS
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(",")
   : ["*"];
 app.use(
   cors({
-    origin: "*", // Allow any origin
+    origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    credentials: true, // optional, if you need cookies/auth
+    credentials: true,
   })
 );
 
-app.use(express.json());
-
 // Rate Limiting
 const apiLimiter = rateLimit({
-  windowMs: 10 * 1000, // 10 sec
-  max: 50, // max 50 requests per window per IP
+  windowMs: 10 * 1000,
+  max: 50,
   message: "Too many requests, try again later.",
 });
 app.use("/api/", apiLimiter);
@@ -213,6 +215,69 @@ app.get("/battle-challenge/:matchCode", (req, res) => {
     </body>
     </html>
   `);
+});
+
+app.post("/api/upload-user-mysql/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { first_name, last_name, photo_url, elo, league, time_zone } =
+      req.body;
+
+    if (!userId || !first_name) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Check if user exists
+    const { rows } = await pool.query(
+      "SELECT user_id FROM leaderboard WHERE user_id = $1",
+      [userId]
+    );
+
+    if (rows.length === 0) {
+      // Only insert if user does NOT exist
+      await pool.query(
+        `INSERT INTO leaderboard
+          (user_id, first_name, last_name, photo_url, elo, league_name, time_zone, last_active)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())`,
+        [userId, first_name, last_name, photo_url, elo, league, time_zone]
+      );
+      console.log(`New user added: ${userId}`);
+      return res.json({ success: true, userId, message: "New user added" });
+    } else {
+      console.log(`User already exists, skipping: ${userId}`);
+      return res.json({
+        success: true,
+        userId,
+        message: "User exists, skipped",
+      });
+    }
+  } catch (err) {
+    console.error("Error uploading user:", err);
+    res.status(500).json({ error: "Failed to upload user" });
+  }
+});
+
+app.post("/api/update-elo", async (req, res) => {
+  const { winnerId, loserId, winnerElo, loserElo } = req.body;
+  if (!winnerId || !loserId || winnerElo == null || loserElo == null) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+
+  try {
+    await pool.query("UPDATE leaderboard SET elo = $1 WHERE user_id = $2", [
+      winnerElo,
+      winnerId,
+    ]);
+    await pool.query("UPDATE leaderboard SET elo = $1 WHERE user_id = $2", [
+      loserElo,
+      loserId,
+    ]);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error updating ELO:", err);
+    res.status(500).json({ error: "Failed to update ELO" });
+  }
 });
 
 // Admin routes
