@@ -257,21 +257,23 @@ async function finishMatch(matchId) {
     // ---- Update ELO in SQL for human players only ----
     try {
       if (winnerElo !== null) {
-        await pool.query(
-          "UPDATE leaderboard SET elo = $1 WHERE user_id = $2",
-          [newWinnerElo, winnerId]
-        );
+        await pool.query("UPDATE leaderboard SET elo = $1 WHERE user_id = $2", [
+          newWinnerElo,
+          winnerId,
+        ]);
       }
 
       if (loserElo !== null) {
-        await pool.query(
-          "UPDATE leaderboard SET elo = $1 WHERE user_id = $2",
-          [newLoserElo, loserId]
-        );
+        await pool.query("UPDATE leaderboard SET elo = $1 WHERE user_id = $2", [
+          newLoserElo,
+          loserId,
+        ]);
       }
 
       console.log(
-        `[Match ${matchId}] 🔹 Updated ELO | Winner: ${newWinnerElo || "-"}, Loser: ${newLoserElo || "-"}`
+        `[Match ${matchId}] 🔹 Updated ELO | Winner: ${
+          newWinnerElo || "-"
+        }, Loser: ${newLoserElo || "-"}`
       );
     } catch (err) {
       console.error("Failed to update ELO in SQL:", err);
@@ -280,7 +282,7 @@ async function finishMatch(matchId) {
 
   // ---- Cleanup ----
   const cleanupDelay =
-    PHASE_TIMERS.get("finished", matchData.numericRound || 0) || 3000;
+    PHASE_TIMERS.get("finished", matchData.numericRound || 0) || 10000;
 
   activeTimers[matchId] = setTimeout(async () => {
     await matchRef.remove();
@@ -288,6 +290,5 @@ async function finishMatch(matchId) {
     console.log(`[Match ${matchId}] 🔥 Deleted from ongoingBattles`);
   }, cleanupDelay);
 }
-
 
 module.exports = { startPhaseLoop, endRound };
