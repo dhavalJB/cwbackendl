@@ -1,0 +1,133 @@
+{
+  "frostguard": {
+    "-OLgj-b_lMhWpjNsrGYa": {
+      "name": "Frostguard",
+      "image": "https://adorable-fudge-c73118.netlify.app/cards/free/frostguard1.avif",
+      "stats": {
+        "agility": 5,
+        "armor": 10,
+        "attack": 7,
+        "intelligence": 7,
+        "powers": 8,
+        "vitality": 10
+      }
+    },
+    "-OLgj0Sy4SHSs9GuaRzE": {
+      "name": "Frostguard",
+      "image": "https://adorable-fudge-c73118.netlify.app/cards/free/frostguard1.avif",
+      "stats": {
+        "agility": 5,
+        "armor": 10,
+        "attack": 7,
+        "intelligence": 7,
+        "powers": 8,
+        "vitality": 10
+      }
+    }
+  },
+  "starivya": {
+    "-OLgiMWNfPkYnSozvIdd": {
+      "name": "Starivya",
+      "image": "https://adorable-fudge-c73118.netlify.app/cards/starviya.avif",
+      "stats": {
+        "agility": 10,
+        "armor": 8,
+        "attack": 9,
+        "intelligence": 12,
+        "powers": 11,
+        "vitality": 8
+      }
+    },
+    "-OLgiNLiSyEWF1tMzua_": {
+      "name": "Starivya",
+      "image": "https://adorable-fudge-c73118.netlify.app/cards/free/starviya2.avif",
+      "stats": {
+        "agility": 10,
+        "armor": 8,
+        "attack": 9,
+        "intelligence": 12,
+        "powers": 11,
+        "vitality": 8
+      }
+    }
+  },
+  "steeltitan": {
+    "-OLgcXB4xWgjPbHh8rPY": {
+      "name": "Steel Titan",
+      "image": "https://adorable-fudge-c73118.netlify.app/cards/free/steeltitan.avif",
+      "stats": {
+        "agility": 8,
+        "armor": 15,
+        "attack": 12,
+        "intelligence": 10,
+        "powers": 9,
+        "vitality": 14
+      }
+    },
+    "-OLgcY2LhaGvrd7tBReq": {
+      "name": "Steel Titan",
+      "image": "https://adorable-fudge-c73118.netlify.app/cards/free/steeltitan2.avif",
+      "stats": {
+        "agility": 8,
+        "armor": 15,
+        "attack": 12,
+        "intelligence": 10,
+        "powers": 9,
+        "vitality": 14
+      }
+    }
+  },
+  "stormscaller": {
+    "-OLghfLuuPsjahVR8D5R": {
+      "name": "Stormscaller",
+      "image": "https://adorable-fudge-c73118.netlify.app/cards/free/stormscaller.avif",
+      "stats": {
+        "agility": 10,
+        "armor": 8,
+        "attack": 10,
+        "intelligence": 12,
+        "powers": 12,
+        "vitality": 8
+      }
+    },
+    "-OLghgf05Wgh5EamNSob": {
+      "name": "Stormscaller",
+      "image": "https://adorable-fudge-c73118.netlify.app/cards/free/stormscaller2.avif",
+      "price": 1,
+      "stats": {
+        "agility": 10,
+        "armor": 8,
+        "attack": 10,
+        "intelligence": 12,
+        "powers": 12,
+        "vitality": 8
+      }
+    }
+  },
+  "xalgrith": {
+    "-OLgd8IwS_1olsbCuyLz": {
+      "name": "Xalgrith the Void",
+      "image": "https://adorable-fudge-c73118.netlify.app/cards/free/xalgrith.avif",
+      "stats": {
+        "agility": 14,
+        "armor": 8,
+        "attack": 18,
+        "intelligence": 12,
+        "powers": 16,
+        "vitality": 10
+      }
+    },
+    "-OLgd9XUvDg1DAGAE-H9": {
+      "name": "Xalgrith  the Void",
+      "image": "https://adorable-fudge-c73118.netlify.app/cards/free/xalgrith2.avif",
+      "stats": {
+        "agility": 14,
+        "armor": 8,
+        "attack": 18,
+        "intelligence": 12,
+        "powers": 16,
+        "vitality": 10
+      }
+    }
+  }
+}
