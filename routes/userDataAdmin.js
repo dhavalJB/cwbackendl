@@ -284,4 +284,51 @@ router.post("/manual-sync/:userId", async (req, res) => {
   }
 });
 
+// ---------------------------
+// POST /api/user/recover/:userId
+// Recover missing starter cards if user exists but has no cards
+// ---------------------------
+router.post("/user/recover/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const userRef = firestore.doc(`users/${userId}`);
+    const userSnap = await userRef.get();
+
+    if (!userSnap.exists) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const cardsSnap = await firestore.collection(`users/${userId}/cards`).get();
+    if (!cardsSnap.empty) {
+      return res.json({
+        success: true,
+        message: "User already has cards, recovery not needed",
+      });
+    }
+
+    // 🆓 Load default cards from free.json
+    const freeCards = getFreeCards();
+
+    // Batch upload
+    const batch = firestore.batch();
+    freeCards.forEach((card) => {
+      const cardRef = firestore.doc(`users/${userId}/cards/${card.cardId}`);
+      batch.set(cardRef, { ...card, recovered: true, lastUpdate: Date.now() });
+    });
+    await batch.commit();
+
+    res.json({
+      success: true,
+      message: "Missing cards recovered successfully",
+      recoveredCards: freeCards.length,
+      cards: freeCards,
+    });
+  } catch (err) {
+    console.error("Error during user recovery:", err);
+    res.status(500).json({ error: "Failed to recover user cards" });
+  }
+});
+
+
 module.exports = { userDataAdminRoutes: router };
