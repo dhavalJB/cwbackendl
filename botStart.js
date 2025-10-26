@@ -44,13 +44,22 @@ Ready to start? Tap *Start Game* below!
 async function handleStartCommand(msg, match) {
   const chatId = msg.chat.id.toString();
   const newUserId = msg.from.id.toString();
-  const referrerId = match[1] ? match[1].trim() : null;
+  const referrerId = match[1] ? match[1].trim() : null; // partner name or referral userId
 
   let referrerData = null;
+  let isPartner = false;
+  let partnerCoins = 1500000; // default for partner user
 
   try {
-    // 1️⃣ Fetch referrer info if exists (read snake_case, fallback to camelCase)
-    if (referrerId) {
+    // 1️⃣ Determine if this is a partner/collab
+    if (referrerId && isNaN(referrerId)) {
+      // text = partner name
+      isPartner = true;
+      referrerData = {
+        name: referrerId,
+      };
+    } else if (referrerId && !isNaN(referrerId)) {
+      // numeric = referral userId
       const referrerDoc = await firestore
         .collection("users")
         .doc(referrerId)
@@ -59,7 +68,6 @@ async function handleStartCommand(msg, match) {
         const rd = referrerDoc.data();
         referrerData = {
           id: referrerId,
-          // prefer snake_case (first_name) but fall back to camelCase (firstName) if needed
           first_name: (rd.first_name ?? rd.firstName ?? "").toString(),
           last_name: (rd.last_name ?? rd.lastName ?? "").toString(),
         };
@@ -71,22 +79,30 @@ async function handleStartCommand(msg, match) {
     const userDoc = await userRef.get();
 
     if (!userDoc.exists) {
-      // Create new user with referredBy map (use snake_case fields)
+      // New user
+      let initialCoins = 1000000; // default new user coins
+
+      if (isPartner) {
+        initialCoins = partnerCoins; // partner user gets 1.5M
+      } else if (referrerData && referrerData.id) {
+        initialCoins = 1000000; // referral user gets 1M
+      }
+
       await userRef.set({
         first_name: msg.from.first_name || "",
         last_name: msg.from.last_name || "",
         referredBy: referrerData || null,
         createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        coins: 1000000,
+        coins: initialCoins,
       });
     } else {
-      // If doc exists and there's a referrer but user has no referredBy, update it
+      // Existing user
       const currentRef = userDoc.data().referredBy;
-      if (referrerData && (!currentRef || !currentRef.id)) {
+      if (referrerData && (!currentRef || !currentRef.id) && !isPartner) {
         await userRef.update({ referredBy: referrerData });
       }
 
-      // Also ensure user record itself uses snake_case for name fields (optional safe touch)
+      // optional: fix name fields
       const updates = {};
       if (!userDoc.data().first_name && userDoc.data().firstName)
         updates.first_name = userDoc.data().firstName;
@@ -95,8 +111,8 @@ async function handleStartCommand(msg, match) {
       if (Object.keys(updates).length) await userRef.update(updates);
     }
 
-    // 3️⃣ Handle referral logic (prevent self-referral)
-    if (referrerData && referrerId !== newUserId) {
+    // 3️⃣ Handle referral reward (only for numeric referrer)
+    if (referrerData && referrerData.id && referrerId !== newUserId) {
       const inviterRef = firestore.collection("users").doc(referrerId);
       const friendDoc = await inviterRef
         .collection("friends")
@@ -104,36 +120,36 @@ async function handleStartCommand(msg, match) {
         .get();
 
       if (!friendDoc.exists) {
-        // Inviter's friends collection: add new user (snake_case)
-        await inviterRef
-          .collection("friends")
-          .doc(newUserId)
-          .set({
-            id: newUserId,
-            first_name: msg.from.first_name || "",
-            last_name: msg.from.last_name || "",
-            invitedAt: admin.firestore.FieldValue.serverTimestamp(),
-          });
+        // Inviter gets coins + lastUpdate
+        const batch = firestore.batch();
 
-        // New user's friends collection: add inviter (snake_case)
-        await userRef.collection("friends").doc(referrerId).set({
+        batch.update(userRef, {
+          coins: admin.firestore.FieldValue.increment(1000000), // new user bonus
+        });
+
+        batch.update(inviterRef, {
+          coins: admin.firestore.FieldValue.increment(1000000), // inviter bonus
+          lastUpdate: admin.firestore.FieldValue.serverTimestamp(), // activity tracker
+        });
+
+        // save friends mapping
+        batch.set(inviterRef.collection("friends").doc(newUserId), {
+          id: newUserId,
+          first_name: msg.from.first_name || "",
+          last_name: msg.from.last_name || "",
+          invitedAt: admin.firestore.FieldValue.serverTimestamp(),
+        });
+
+        batch.set(userRef.collection("friends").doc(referrerId), {
           id: referrerId,
           first_name: referrerData.first_name,
           last_name: referrerData.last_name,
           invitedAt: admin.firestore.FieldValue.serverTimestamp(),
         });
 
-        // 4️⃣ Grant referral coins (atomic)
-        const batch = firestore.batch();
-        batch.update(userRef, {
-          coins: admin.firestore.FieldValue.increment(1000000),
-        });
-        batch.update(inviterRef, {
-          coins: admin.firestore.FieldValue.increment(1000000),
-        });
         await batch.commit();
 
-        // Notify inviter (uses msg.from.first_name as visible name)
+        // Notify inviter
         await bot.sendMessage(
           referrerId,
           `🎉 You just invited ${
@@ -143,7 +159,7 @@ async function handleStartCommand(msg, match) {
       }
     }
 
-    // 5️⃣ Send welcome image + inline buttons
+    // 4️⃣ Send welcome image + buttons
     const opts = {
       parse_mode: "Markdown",
       caption: description.slice(0, 1024),
@@ -163,8 +179,7 @@ async function handleStartCommand(msg, match) {
     await bot.sendPhoto(chatId, imageUrl, opts);
   } catch (err) {
     console.error("❌ Telegram /start error:", err);
-
-    // Fallback: always send text with buttons
+    // fallback
     await bot.sendMessage(chatId, description, {
       parse_mode: "Markdown",
       reply_markup: {

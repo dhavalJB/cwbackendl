@@ -17,6 +17,8 @@ const { telegramWebhookHandler, sendInviteHandler } = require("./botStart");
 const { setTutorialFlag } = require("./controllers/tutorialController");
 const { cardsAdminRoutes } = require("./routes/cardsAdmin");
 const { userDataAdminRoutes } = require("./routes/userDataAdmin");
+const { partnersHandler } = require("./partnerHandler");
+
 const pool = require("./db");
 
 // -------------------- APP SETUP --------------------
@@ -180,6 +182,8 @@ app.get("/invite/:referrerId", (req, res) => {
     </html>
   `);
 });
+
+app.get("/partner/:partnerName", partnersHandler);
 
 app.get("/battle-challenge/:matchCode", (req, res) => {
   const { matchCode } = req.params;
