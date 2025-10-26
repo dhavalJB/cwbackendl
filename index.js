@@ -17,7 +17,7 @@ const { telegramWebhookHandler, sendInviteHandler } = require("./botStart");
 const { setTutorialFlag } = require("./controllers/tutorialController");
 const { cardsAdminRoutes } = require("./routes/cardsAdmin");
 const { userDataAdminRoutes } = require("./routes/userDataAdmin");
-const { partnersHandler } = require("./partnerHandler");
+const { partnersHandler } = require("./routes/partnerHandler");
 
 const pool = require("./db");
 
