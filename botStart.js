@@ -1,6 +1,7 @@
 require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 const { firestore, admin } = require("./firebase");
+const pool = require("./db");
 
 const TELEGRAM_BOT_TOKEN =
   process.env.TELEGRAM_BOT_TOKEN ||
@@ -83,7 +84,17 @@ async function handleStartCommand(msg, match) {
       let initialCoins = 1000000; // default new user coins
 
       if (isPartner) {
-        initialCoins = partnerCoins; // partner user gets 1.5M
+        try {
+          await pool.query(
+            `UPDATE partners
+       SET users_joined = users_joined + 1
+       WHERE name = $1`,
+            [referrerId] // partner name, e.g., 'kalkiverse'
+          );
+          console.log(`✅ Partner ${referrerId} users_joined incremented`);
+        } catch (err) {
+          console.error("❌ Failed to update partner users_joined:", err);
+        }
       } else if (referrerData && referrerData.id) {
         initialCoins = 1000000; // referral user gets 1M
       }
