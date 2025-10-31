@@ -84,6 +84,7 @@ async function handleStartCommand(msg, match) {
       let initialCoins = 1000000; // default new user coins
 
       if (isPartner) {
+        initialCoins = partnerCoins; // partner user gets 1.5M
         try {
           await pool.query(
             `UPDATE partners

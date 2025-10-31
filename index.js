@@ -261,6 +261,42 @@ app.post("/api/upload-user-mysql/:userId", async (req, res) => {
   }
 });
 
+app.post("/api/upload-user-timezone-mysql", async (req, res) => {
+  try {
+    const { userId, timezone } = req.body;
+
+    if (!userId || !timezone) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Check if user already exists
+    const { rows } = await pool.query(
+      "SELECT user_id FROM user_timezones WHERE user_id = $1",
+      [userId]
+    );
+
+    if (rows.length === 0) {
+      // Insert new user timezone
+      await pool.query(
+        `INSERT INTO user_timezones (user_id, timezone) VALUES ($1, $2)`,
+        [userId, timezone]
+      );
+      console.log(`Timezone added for user: ${userId}`);
+      return res.json({ success: true, userId, message: "Timezone saved" });
+    } else {
+      console.log(`User already exists, skipping insert: ${userId}`);
+      return res.json({
+        success: true,
+        userId,
+        message: "User exists, skipped",
+      });
+    }
+  } catch (err) {
+    console.error("Error saving timezone:", err);
+    return res.status(500).json({ error: "Failed to save timezone" });
+  }
+});
+
 app.post("/api/update-elo", async (req, res) => {
   const { winnerId, loserId, winnerElo, loserElo } = req.body;
   if (!winnerId || !loserId || winnerElo == null || loserElo == null) {
