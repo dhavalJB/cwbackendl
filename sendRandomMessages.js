@@ -7,7 +7,7 @@ const path = require("path");
 
 // Load JSON messages
 const messages = JSON.parse(
-  fs.readFileSync(path.join(__dirname, "messages.json"), "utf-8")
+  fs.readFileSync(path.join(__dirname, "message.json"), "utf-8")
 );
 
 async function sendMessagesToAllUsers() {
