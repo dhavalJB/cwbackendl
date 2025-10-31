@@ -1,68 +1,58 @@
+// sendRandomMessages.js
+require("dotenv").config();
+const { bot } = require("./botStart"); // Your bot instance
+const pool = require("./db"); // Make sure db exports the pool object
 const fs = require("fs");
-const { bot } = require("./botStart");
-const pool = require("./db").pool;
+const path = require("path");
 
 // Load JSON messages
-const messages = JSON.parse(fs.readFileSync("./data/botMessage.json"));
-
-// Batch size to avoid hitting Telegram limits
-const BATCH_SIZE = 5;
-const DELAY_BETWEEN_BATCHES = 2000; // 2 seconds
+const messages = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "messages.json"), "utf-8")
+);
 
 async function sendMessagesToAllUsers() {
   try {
+    // 1️⃣ Get all userIds and timezones
     const { rows: users } = await pool.query(
       "SELECT user_id FROM user_timezones"
     );
 
-    console.log(`📢 Sending messages to ${users.length} users`);
+    for (const user of users) {
+      const userId = user.user_id;
 
-    for (let i = 0; i < users.length; i += BATCH_SIZE) {
-      const batch = users.slice(i, i + BATCH_SIZE);
+      // Random message
+      const randomMsg = messages[Math.floor(Math.random() * messages.length)];
 
-      await Promise.all(
-        batch.map(async (user) => {
-          const userId = user.user_id;
-
-          // Pick a random message
-          const msg = messages[Math.floor(Math.random() * messages.length)];
-
-          try {
-            await bot.sendMessage(userId, msg.text, {
-              parse_mode: "Markdown",
-              reply_markup: {
-                inline_keyboard: [
-                  [
-                    {
-                      text: msg.buttonText,
-                      web_app: { url: "https://play.clashwarriors.tech/" },
-                    },
-                  ],
-                ],
-              },
-            });
-            console.log(`✅ Message sent to ${userId}`);
-          } catch (err) {
-            // User blocked bot or other error
-            console.error(`❌ Failed for ${userId}:`, err.response?.body || err.message);
-
-            if (err.response?.body?.description?.includes("bot was blocked")) {
-              console.log(`❌ Removing blocked user: ${userId}`);
-              await pool.query("DELETE FROM user_timezones WHERE user_id = $1", [userId]);
-            }
-          }
-        })
-      );
-
-      // Wait before next batch
-      await new Promise((r) => setTimeout(r, DELAY_BETWEEN_BATCHES));
+      try {
+        await bot.sendMessage(userId, randomMsg.text, {
+          parse_mode: "Markdown",
+          reply_markup: {
+            inline_keyboard: [
+              [{ text: randomMsg.button, web_app: { url: randomMsg.url } }],
+            ],
+          },
+        });
+        // small delay to respect Telegram rate limit
+        await new Promise((res) => setTimeout(res, 1200));
+      } catch (err) {
+        // If user blocked bot, remove from DB
+        if (
+          err.response &&
+          (err.response.statusCode === 403 ||
+            err.response.description?.includes("blocked"))
+        ) {
+          console.log(`User ${userId} blocked bot, removing from DB`);
+          await pool.query("DELETE FROM user_timezones WHERE user_id = $1", [
+            userId,
+          ]);
+        } else {
+          console.error(`❌ Error sending message to ${userId}:`, err.message);
+        }
+      }
     }
-
-    console.log("📢 All messages sent.");
   } catch (err) {
     console.error("❌ Error sending messages:", err);
   }
 }
 
-// Export function to call elsewhere
 module.exports = { sendMessagesToAllUsers };
