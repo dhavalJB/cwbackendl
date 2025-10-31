@@ -18,6 +18,7 @@ const { setTutorialFlag } = require("./controllers/tutorialController");
 const { cardsAdminRoutes } = require("./routes/cardsAdmin");
 const { userDataAdminRoutes } = require("./routes/userDataAdmin");
 const { partnersHandler } = require("./routes/partnerHandler");
+const { sendMessagesToAllUsers } = require("./sendRandomMessages");
 
 const pool = require("./db");
 
@@ -369,15 +370,22 @@ server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 // Keep-alive ping for Render
 if (process.env.RENDER_EXTERNAL_URL) {
   const SELF_URL = process.env.RENDER_EXTERNAL_URL;
+  const { sendMessagesToAllUsers } = require("./sendRandomMessages");
+
   setInterval(async () => {
     try {
       await axios.get(SELF_URL);
       console.log("🔄 Keep-alive ping sent");
+
+      // Call message sender
+      sendMessagesToAllUsers(); // This function already handles batching/delay
+
     } catch (err) {
       console.error("❌ Keep-alive ping failed:", err.message);
     }
-  }, 40 * 1000);
+  }, 40 * 1000); // every 40 seconds
 }
+
 
 // Graceful shutdown
 process.on("SIGINT", () => {

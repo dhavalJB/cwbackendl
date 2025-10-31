@@ -24,9 +24,10 @@ const description = `
 Clash Warriors is a real-time multiplayer Web3 battle game built on TON — fully inside Telegram!
 
 ⚔️ *How to Play:*  
-- Assemble your team of heroes  
+- Assemble your team of warriors  
+- Strategize & deploy warriors in fast-paced battles  
 - Battle other players in skill-based PvP fights  
-- Complete daily missions & unlock new heroes  
+- Complete daily missions & unlock new warriors  
 - Join ranked leagues and climb leaderboards  
 
 💰 *How to Earn:*  
@@ -334,4 +335,4 @@ async function telegramWebhookHandler(req, res) {
   }
 }
 
-module.exports = { telegramWebhookHandler, sendInviteHandler };
+module.exports = { telegramWebhookHandler, sendInviteHandler, bot};
