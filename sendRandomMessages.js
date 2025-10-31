@@ -73,11 +73,10 @@ async function sendMessagesToAllUsers() {
 }
 
 // Optional: function to schedule sending every 3 hours
-function scheduleMessages(intervalSeconds = 10) {
-  const intervalMs = intervalSeconds * 1000;
-  console.log(`⏰ Scheduling messages every ${intervalSeconds} second(s).`);
+function scheduleMessages(intervalHours = 3) {
+  const intervalMs = intervalHours * 60 * 60 * 1000;
+  console.log(`⏰ Scheduling messages every ${intervalHours} hour(s).`);
   setInterval(sendMessagesToAllUsers, intervalMs);
 }
-
 
 module.exports = { sendMessagesToAllUsers, scheduleMessages };
