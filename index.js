@@ -370,28 +370,21 @@ server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 // Keep-alive ping for Render
 if (process.env.RENDER_EXTERNAL_URL) {
   const SELF_URL = process.env.RENDER_EXTERNAL_URL;
-  const { sendMessagesToAllUsers } = require("./sendRandomMessages");
 
+  // Keep-alive ping every 40 seconds
   setInterval(async () => {
     try {
       await axios.get(SELF_URL);
       console.log("🔄 Keep-alive ping sent");
-
-      // Call message sender
-      sendMessagesToAllUsers(); // This function already handles batching/delay
-
     } catch (err) {
       console.error("❌ Keep-alive ping failed:", err.message);
     }
-  }, 40 * 1000); // every 40 seconds
+  }, 40 * 1000);
+
+  // Schedule random messages every 3 hours
+  const { scheduleMessages } = require("./sendRandomMessages");
+  scheduleMessages(10);
 }
-
-
-// Graceful shutdown
-process.on("SIGINT", () => {
-  console.log("Shutting down gracefully...");
-  server.close(() => process.exit(0));
-});
 
 // Export io and emit helper
 module.exports = { io, emitMatchFound, connectedUsers };
