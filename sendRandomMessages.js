@@ -3,7 +3,7 @@ const { bot } = require("./botStart");
 const pool = require("./db").pool;
 
 // Load JSON messages
-const messages = JSON.parse(fs.readFileSync("./messages.json"));
+const messages = JSON.parse(fs.readFileSync("./data/botMessage.json"));
 
 // Batch size to avoid hitting Telegram limits
 const BATCH_SIZE = 5;
