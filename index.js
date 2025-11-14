@@ -383,7 +383,7 @@ if (process.env.RENDER_EXTERNAL_URL) {
 
   // Schedule random messages every 3 hours
   const { scheduleMessages } = require("./sendRandomMessages");
-  scheduleMessages(3);
+  scheduleMessages(6);
 }
 
 // Export io and emit helper
