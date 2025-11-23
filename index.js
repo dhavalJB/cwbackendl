@@ -33,7 +33,8 @@ app.use(express.json());
 const allowedOrigins = [
   "https://play.clashwarriors.tech",
   "https://clashwarriors.tech",
-  "http://localhost:5173", // for dev
+  "http://localhost:5173",
+  "https://adorable-fudge-c73118.netlify.app",
 ];
 
 app.use(
