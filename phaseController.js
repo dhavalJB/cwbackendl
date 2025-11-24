@@ -280,6 +280,55 @@ async function finishMatch(matchId) {
     }
   }
 
+  // ---- Stake Mode Settlement ----
+  try {
+    const p1Stake = player1.mode === "stake";
+    const p2Stake = player2.mode === "stake";
+
+    if (p1Stake || p2Stake) {
+      const url = "https://onchain.clashwarriors.tech/battle-report";
+
+      // Case 1: both stake
+      if (p1Stake && p2Stake) {
+        await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            winnerWalletId:
+              winnerId === player1.userId ? player1.walletId : player2.walletId,
+            loserWalletId:
+              loserId === player1.userId ? player1.walletId : player2.walletId,
+          }),
+        });
+
+        console.log(
+          `[Match ${matchId}] 🔗 Sent duel stake report (2 players).`
+        );
+      }
+
+      // Case 2: only one stake user
+      else {
+        let stakePlayer = p1Stake ? player1 : player2;
+        let result = stakePlayer.userId === winnerId ? "win" : "lose";
+
+        await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            walletId: stakePlayer.walletId,
+            result,
+          }),
+        });
+
+        console.log(
+          `[Match ${matchId}] 🔗 Sent single stake report: ${stakePlayer.walletId} → ${result}`
+        );
+      }
+    }
+  } catch (err) {
+    console.error(`[Match ${matchId}] ❌ Stake report failed`, err);
+  }
+
   // ---- Cleanup ----
   const cleanupDelay =
     PHASE_TIMERS.get("finished", matchData.numericRound || 0) || 10000;
